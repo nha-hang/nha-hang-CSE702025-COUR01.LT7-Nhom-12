@@ -565,3 +565,107 @@ footer p
     color: #721c24; /* Chữ đỏ đậm */
     border: 1px solid #f5c6cb;
 }
+/* Sơ đồ bàn ăn */
+#table-map {
+    display: flex;
+    flex-direction: column; /* Arrange areas vertically */
+    gap: 30px; /* Space between indoor and outdoor areas */
+    width: 100%; /* Ensure it takes full width */
+    max-width: 900px; /* Max width to keep it centered and readable */
+    margin: 0 auto; /* Center the map horizontally */
+}
+
+.table-area {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    text-align: center; /* Center the heading within the area */
+}
+
+.table-area h4 {
+    margin-bottom: 20px;
+    font-size: 20px;
+    color: var(--black-color);
+}
+
+.table-layout-indoor,
+.table-layout-outdoor {
+    display: grid;
+    gap: 15px;
+    justify-content: center; /* Center the grid items within their layout container */
+}
+
+.table-layout-indoor {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Flexible columns for indoor */
+    max-width: 800px; /* Limit width for better layout */
+    margin: 0 auto; /* Center the indoor layout */
+}
+
+.table-layout-outdoor {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Flexible columns for outdoor */
+    max-width: 600px; /* Limit width for outdoor area */
+    margin: 0 auto; /* Center the outdoor layout */
+}
+
+
+.table-seat {
+    width: 120px; /* Make seats a bit larger for better visibility of text */
+    height: 80px; /* Adjust height as needed */
+    border-radius: 10px;
+    text-align: center;
+    line-height: 80px; /* Center text vertically */
+    font-weight: bold;
+    color: #fff;
+    cursor: pointer;
+    user-select: none;
+    display: flex; /* Use flexbox for centering text within the div */
+    align-items: center;
+    justify-content: center;
+    padding: 5px; /* Add some padding */
+    box-sizing: border-box; /* Include padding in width/height */
+    font-size: 14px; /* Adjust font size */
+    transition: all 0.2s ease-in-out; /* Smooth transition for hover/selection */
+}
+
+.table-available {
+    background-color: #28a745; /* Green for available */
+}
+.table-reserved {
+    background-color: #dc3545; /* Red for reserved */
+    cursor: not-allowed;
+    opacity: 0.7; /* Make reserved tables slightly faded */
+}
+.table-seat.selected {
+    border: 4px solid gold;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.5); /* Add a glow */
+}
+.table-available:hover {
+    opacity: 0.8; /* Slight fade on hover for available tables */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .table-layout-indoor,
+    .table-layout-outdoor {
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* Adjust columns for smaller screens */
+    }
+    .table-seat {
+        width: 100px;
+        height: 70px;
+        line-height: 70px;
+        font-size: 13px;
+    }
+}
+@media (max-width: 480px) {
+    .table-layout-indoor,
+    .table-layout-outdoor {
+        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    }
+    .table-seat {
+        width: 80px;
+        height: 60px;
+        line-height: 60px;
+        font-size: 12px;
+    }
+}
