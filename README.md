@@ -34,7 +34,8 @@ Các mục lớn của trang web:
 
   
   * Liên hệ
-  ![image](https://github.com/user-attachments/assets/cddc1ac6-925a-422e-b0f3-eab9e1d7ef4a)
+  ![image](https://github.com/user-attachments/assets/423c77f7-d1dc-4b09-a343-6cddc7948461)
+
 
 
 ## Tài liệu tham khảo
