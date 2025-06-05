@@ -98,6 +98,52 @@
                             <h1>Đặt Bàn</h1>
                             <p>Đến với nhà hàng, khách hàng sẽ thấy được không gian thoáng đãng, có những phòng riêng biệt cho hội họp hay sinh nhật với màu sắc tươi sáng.</p>
                         </div>
+                        <div class="container my-5">
+                            <div class="row text-center">
+                                <div class="col-md-4">
+                                    <h5>Số bàn trống:</h5>
+                                    <p id="available-tables" class="font-weight-bold text-success">...</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <h5>Số bàn đã đặt:</h5>
+                                    <p id="reserved-tables" class="font-weight-bold text-danger">...</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <h5>Tổng số bàn:</h5>
+                                    <p id="total-tables" class="font-weight-bold">...</p>
+                                </div>
+                            </div>
+                            <div class="text-center my-4">
+                                <h4>Sơ đồ bàn ăn</h4>
+                                <div id="table-map" class="d-flex flex-wrap justify-content-center"></div>
+                                    <div class="table-area">
+                                        <h4>Khu vực trong nhà</h4>
+                                        <div class="table-layout-indoor">
+                                            <div class="table-seat" id="table-indoor-1" data-table-id="1" data-capacity="6">Bàn 1 (6 chỗ)</div>
+                                            <div class="table-seat" id="table-indoor-2" data-table-id="2" data-capacity="6">Bàn 2 (6 chỗ)</div>
+                                            <div class="table-seat" id="table-indoor-3" data-table-id="3" data-capacity="6">Bàn 3 (6 chỗ)</div>
+                                            <div class="table-seat" id="table-indoor-4" data-table-id="4" data-capacity="6">Bàn 4 (6 chỗ)</div>
+                                            <div class="table-seat" id="table-indoor-5" data-table-id="5" data-capacity="4">Bàn 5 (4 chỗ)</div>
+                                            <div class="table-seat" id="table-indoor-6" data-table-id="6" data-capacity="4">Bàn 6 (4 chỗ)</div>
+                                            <div class="table-seat" id="table-indoor-7" data-table-id="7" data-capacity="4">Bàn 7 (4 chỗ)</div>
+                                            <div class="table-seat" id="table-indoor-8" data-table-id="8" data-capacity="4">Bàn 8 (4 chỗ)</div>
+                                            <div class="table-seat" id="table-indoor-9" data-table-id="9" data-capacity="4">Bàn 9 (4 chỗ)</div>
+                                            <div class="table-seat" id="table-indoor-10" data-table-id="10" data-capacity="4">Bàn 10 (4 chỗ)</div>
+                                        </div>
+                                    </div>
+                                    <div class="table-area">
+                                        <h4>Khu vực ngoài trời</h4>
+                                        <div class="table-layout-outdoor">
+                                            <div class="table-seat" id="table-outdoor-11" data-table-id="11" data-capacity="5">Bàn 11 (5 chỗ)</div>
+                                            <div class="table-seat" id="table-outdoor-12" data-table-id="12" data-capacity="5">Bàn 12 (5 chỗ)</div>
+                                            <div class="table-seat" id="table-outdoor-13" data-table-id="13" data-capacity="5">Bàn 13 (5 chỗ)</div>
+                                            <div class="table-seat" id="table-outdoor-14" data-table-id="14" data-capacity="5">Bàn 14 (5 chỗ)</div>
+                                            <div class="table-seat" id="table-outdoor-15" data-table-id="15" data-capacity="5">Bàn 15 (5 chỗ)</div>
+                                        </div>
+                                    </div>        
+                                </div>
+                            </div>
+                        </div>    
                         <form id="reservation-form"> <div class="row">
                                 <div class="col-lg-6 col-md-6">
                                     <div class="menu-item">
@@ -142,6 +188,7 @@
                                     <textarea name="notes" id="notes" placeholder="Gửi lời nhắn cho chúng tôi" class="form-text"></textarea>
                                 </div>
                             </div>
+                            <input type="hidden" name="table_id" id="table_id" />
                             <div class="reservation-banner">
                                 <div class="container">
                                     <div class="reservation-content">
@@ -223,44 +270,100 @@
 </body>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        const reservationForm = document.getElementById('reservation-form'); // Lấy form theo id="reservation-form"
-        const reservationMessageDiv = document.getElementById('reservation-message'); // Lấy div hiển thị thông báo
+        const reservationForm = document.getElementById('reservation-form');
+        const reservationMessageDiv = document.getElementById('reservation-message');
+        const totalTables = 15; // Set total tables to 15 as per requirement
 
-        if (reservationForm) { // Đảm bảo form tồn tại trước khi thêm event listener
+        const updateTableMapAndCounts = async () => {
+            try {
+                const response = await fetch('/api/tables');
+                const data = await response.json();
+
+                let reservedCount = 0;
+                const reservedCountEl = document.getElementById('reserved-tables');
+                const availableCountEl = document.getElementById('available-tables');
+                const totalCountEl = document.getElementById('total-tables'); // This will remain 15
+
+                // Ensure the total count is set correctly initially
+                totalCountEl.textContent = totalTables;
+
+                // Reset all tables to available initially before updating based on fetched data
+                document.querySelectorAll('.table-seat').forEach(tableDiv => {
+                    tableDiv.classList.remove('table-reserved', 'selected');
+                    tableDiv.classList.add('table-available');
+                    tableDiv.style.cursor = 'pointer';
+                    // Re-add event listener to clear existing ones
+                    const newTableDiv = tableDiv.cloneNode(true);
+                    tableDiv.parentNode.replaceChild(newTableDiv, tableDiv);
+                });
+
+
+                data.forEach(table => {
+                    const tableDiv = document.querySelector(`[data-table-id="${table.id}"]`);
+                    if (tableDiv) {
+                        if (table.status === 'reserved') {
+                            tableDiv.classList.add('table-reserved');
+                            tableDiv.classList.remove('table-available');
+                            tableDiv.style.cursor = 'not-allowed';
+                        } else {
+                            tableDiv.classList.add('table-available');
+                            tableDiv.classList.remove('table-reserved');
+                            tableDiv.style.cursor = 'pointer';
+                            tableDiv.addEventListener('click', () => {
+                                document.querySelectorAll('.table-seat.selected').forEach(el => el.classList.remove('selected'));
+                                tableDiv.classList.add('selected');
+                                document.getElementById('table_id').value = table.id;
+                            });
+                        }
+                    }
+                });
+
+                reservedCount = data.filter(table => table.status === 'reserved').length;
+
+                reservedCountEl.textContent = reservedCount;
+                availableCountEl.textContent = totalTables - reservedCount;
+            } catch (error) {
+                console.error('Lỗi khi tải trạng thái bàn:', error);
+                // Optionally display an error message on the page
+            }
+        };
+
+        // Initial load of table map and counts
+        updateTableMapAndCounts();
+
+        if (reservationForm) {
             reservationForm.addEventListener('submit', async function(event) {
-                event.preventDefault(); // Ngăn form submit theo cách truyền thống của HTML
+                event.preventDefault();
 
                 const formData = new FormData(reservationForm);
-                // Chuyển FormData thành một đối tượng JavaScript đơn giản
                 const data = Object.fromEntries(formData.entries());
 
-                // Hiển thị thông báo đang gửi
                 reservationMessageDiv.textContent = 'Đang gửi yêu cầu đặt bàn...';
-                reservationMessageDiv.className = 'message'; // Reset class (nếu bạn có CSS cho class 'message')
+                reservationMessageDiv.className = 'message';
 
                 try {
-                    // Gửi yêu cầu POST đến API đặt bàn đã định nghĩa trong server.js
                     const response = await fetch('/api/reservations', {
                         method: 'POST',
                         headers: {
-                            'Content-Type': 'application/json' // Báo cho server biết dữ liệu là JSON
+                            'Content-Type': 'application/json'
                         },
-                        body: JSON.stringify(data) // Chuyển đối tượng data thành chuỗi JSON
+                        body: JSON.stringify(data)
                     });
 
-                    const result = await response.json(); // Phân tích phản hồi JSON từ server
+                    const result = await response.json();
 
-                    if (response.ok && result.success) { // Kiểm tra trạng thái HTTP và thuộc tính 'success' từ server
-                        reservationMessageDiv.textContent = result.message; // Hiển thị thông báo thành công
-                        reservationMessageDiv.classList.add('success'); // Thêm class 'success' để áp dụng CSS
-                        reservationForm.reset(); // Xóa các trường trong form sau khi gửi thành công
+                    if (response.ok && result.success) {
+                        reservationMessageDiv.textContent = result.message;
+                        reservationMessageDiv.classList.add('success');
+                        reservationForm.reset();
+                        document.getElementById('table_id').value = ''; // Clear selected table ID
+                        updateTableMapAndCounts(); // Re-fetch and update table status after successful reservation
                     } else {
-                        // Hiển thị thông báo lỗi từ server hoặc lỗi mặc định
                         reservationMessageDiv.textContent = result.error || 'Có lỗi xảy ra khi đặt bàn. Vui lòng thử lại.';
-                        reservationMessageDiv.classList.add('error'); // Thêm class 'error' để áp dụng CSS
+                        reservationMessageDiv.classList.add('error');
                     }
                 } catch (error) {
-                    console.error('Lỗi khi gửi form đặt bàn:', error); // Ghi lỗi ra console để debug
+                    console.error('Lỗi khi gửi form đặt bàn:', error);
                     reservationMessageDiv.textContent = 'Lỗi kết nối máy chủ. Vui lòng thử lại sau.';
                     reservationMessageDiv.classList.add('error');
                 }
