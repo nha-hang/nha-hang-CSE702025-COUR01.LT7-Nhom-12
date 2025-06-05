@@ -53,4 +53,4 @@ Nhóm 18 - CNTT3 - K17:
   * Lê Đình Đức Anh: 23010219
   * Lê Đức Anh: 23010251
 
-#### 2025. Trường Đại học Phenikaa
+#### 2025. Đại học Phenikaa
