@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th5 28, 2025 lúc 10:07 AM
+-- Thời gian đã tạo: Th6 05, 2025 lúc 05:07 PM
 -- Phiên bản máy phục vụ: 10.4.32-MariaDB
 -- Phiên bản PHP: 8.2.12
 
@@ -36,6 +36,14 @@ CREATE TABLE `contact_messages` (
   `sent_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `is_read` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `contact_messages`
+--
+
+INSERT INTO `contact_messages` (`id`, `sender_name`, `sender_email`, `subject`, `message`, `sent_at`, `is_read`) VALUES
+(1, ' nam', 'nam@gmail.com', 'Contact Form Message', 'gg', '2025-05-30 10:43:08', 0),
+(2, ' nam', 'nam@gmail.com', 'Contact Form Message', '1', '2025-05-30 13:53:40', 0);
 
 -- --------------------------------------------------------
 
@@ -70,8 +78,53 @@ CREATE TABLE `reservations` (
   `reservation_time` time NOT NULL,
   `notes` text NOT NULL,
   `status` enum('pending','confirmed','cancelled','completed') NOT NULL DEFAULT 'pending',
-  `created_at` int(11) NOT NULL DEFAULT current_timestamp()
+  `created_at` int(11) NOT NULL DEFAULT current_timestamp(),
+  `table_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `reservations`
+--
+
+INSERT INTO `reservations` (`id`, `customer_name`, `customer_phone`, `customer_email`, `number_of_guests`, `reservation_date`, `reservation_time`, `notes`, `status`, `created_at`, `table_id`) VALUES
+(1, 'nam', '0944082389', 'nam@gmail.com', 4, '2025-05-31', '17:30:00', 'http://localhost:3000', 'pending', 2147483647, 0),
+(2, 'nam', '0944082389', 'nam@gmail.com', 2, '2025-06-06', '09:00:00', '0000', 'pending', 2147483647, 0),
+(3, 'nam', '0944082389', 'nam@gmail.com', 4, '2025-06-06', '13:50:00', '000', 'pending', 2147483647, 0),
+(4, 'nam', '0944082389', 'nam@gmail.com', 2, '2025-06-27', '09:49:00', '0000', 'pending', 2147483647, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `tables`
+--
+
+CREATE TABLE `tables` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `seat_capacity` int(11) NOT NULL,
+  `status` enum('available','reserved','maintenance') NOT NULL DEFAULT 'available'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `tables`
+--
+
+INSERT INTO `tables` (`id`, `name`, `seat_capacity`, `status`) VALUES
+(1, 'Bàn 1', 4, 'available'),
+(2, 'Bàn 2', 4, 'available'),
+(3, 'Bàn 3', 4, 'available'),
+(4, 'Bàn 4', 4, 'available'),
+(5, 'Bàn 5', 4, 'available'),
+(6, 'Bàn 6', 4, 'available'),
+(7, 'Bàn 7', 4, 'available'),
+(8, 'Bàn 8', 4, 'available'),
+(9, 'Bàn 9', 4, 'available'),
+(10, 'Bàn 10', 4, 'available'),
+(11, 'Bàn 11', 6, 'available'),
+(12, 'Bàn 12', 6, 'available'),
+(13, 'Bàn 13', 6, 'available'),
+(14, 'Bàn 14', 6, 'available'),
+(15, 'Bàn 15', 6, 'available');
 
 -- --------------------------------------------------------
 
@@ -126,6 +179,12 @@ ALTER TABLE `reservations`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Chỉ mục cho bảng `tables`
+--
+ALTER TABLE `tables`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Chỉ mục cho bảng `teams`
 --
 ALTER TABLE `teams`
@@ -147,7 +206,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT cho bảng `contact_messages`
 --
 ALTER TABLE `contact_messages`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT cho bảng `menu_items`
@@ -159,7 +218,13 @@ ALTER TABLE `menu_items`
 -- AUTO_INCREMENT cho bảng `reservations`
 --
 ALTER TABLE `reservations`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT cho bảng `tables`
+--
+ALTER TABLE `tables`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT cho bảng `teams`
