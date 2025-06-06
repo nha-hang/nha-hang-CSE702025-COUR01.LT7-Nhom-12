@@ -544,7 +544,56 @@ footer p
     max-width: 900px; /* Giới hạn chiều rộng tối đa để không quá lớn trên màn hình rộng */
     box-sizing: border-box; /* Đảm bảo padding và border được tính vào width */
     box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Thêm bóng đổ như hình ảnh */
+    
+    /* NEW: Thêm background image và màu nền mặc định */
+    background-size: cover; /* Đảm bảo ảnh nền bao phủ toàn bộ khu vực */
+    background-position: center; /* Căn giữa ảnh nền */
+    background-repeat: no-repeat; /* Không lặp lại ảnh nền */
+    min-height: 250px; /* Tăng chiều cao tối thiểu để ảnh nền hiển thị tốt */
+    position: relative; /* Để có thể định vị các bàn bên trong tương đối */
 }
+
+/* Ảnh sơ đồ cho Khu vực trong nhà */
+/* Thay đổi URL ảnh cho phù hợp với đường dẫn thực tế của bạn */
+.table-area:nth-child(1) { /* Khu vực trong nhà, giả sử là div.table-area đầu tiên */
+    background-image: url('assets/img/Banners/indoor-map.png'); /* Thay bằng đường dẫn ảnh sơ đồ trong nhà của bạn */
+    background-color: #f9f9f9; /* Màu nền dự phòng */
+}
+
+/* Ảnh sơ đồ cho Khu vực ngoài trời */
+/* Thay đổi URL ảnh cho phù hợp với đường dẫn thực tế của bạn */
+.table-area:nth-child(2) { /* Khu vực ngoài trời, giả sử là div.table-area thứ hai */
+    background-image: url('assets/img/Banners/outdoor-map.png'); /* Thay bằng đường dẫn ảnh sơ đồ ngoài trời của bạn */
+    background-color: #f9f9f9; /* Màu nền dự phòng */
+}
+
+/* Điều chỉnh vị trí của các bàn trên sơ đồ nếu cần */
+/* Đây là ví dụ, bạn sẽ cần điều chỉnh `top`, `left`, `right`, `bottom` cho từng bàn cụ thể */
+/* Để định vị chính xác, bạn cần đặt position: absolute cho .table-seat và relative cho .table-area */
+/* Tuy nhiên, với layout hiện tại dùng flexbox, việc định vị chính xác trên ảnh nền là phức tạp */
+/* Nếu ảnh sơ đồ của bạn chỉ mang tính minh họa và không yêu cầu các bàn trùng khớp hoàn hảo với hình ảnh */
+/* thì giữ nguyên cách định vị hiện tại của flexbox. */
+/* Nếu bạn muốn định vị chính xác, bạn sẽ phải chuyển đổi layout .table-layout sang position: relative và .table-seat sang position: absolute */
+/* Ví dụ: */
+/*
+.table-layout {
+    display: block; // Chuyển từ flex sang block
+    position: relative;
+    height: auto; // Hoặc một chiều cao cố định lớn hơn nếu cần
+    min-height: 200px; // Đảm bảo đủ không gian cho các bàn absolute
+}
+
+.table-seat {
+    position: absolute; // Định vị tuyệt đối
+    // Ví dụ vị trí cho bàn 1
+    &[data-table-id="1"] {
+        top: 20px;
+        left: 30px;
+    }
+    // ... và các bàn khác
+}
+*/
+
 
 .table-area h4 {
     text-align: center;
@@ -678,6 +727,8 @@ footer p
     text-transform: uppercase;
     letter-spacing: 1px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* Thêm đổ bóng */
+    margin: 30px auto 0 auto; /* Thêm margin auto để căn giữa */
+    display: block; /* Đảm bảo nút là block để margin auto hoạt động */
 }
 
 #confirm-table-selection:hover {
