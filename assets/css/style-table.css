@@ -734,3 +734,39 @@ footer p
         margin-bottom: 5px; /* Add vertical margin */
     }
 }
+/* ... giữ nguyên các style đã có ở trên ... */
+
+/* Thêm vào cuối file style-table.css */
+
+#start-reservation-btn {
+    background-color: var(--primary-color);
+    color: var(--white-color);
+    border: none;
+    padding: 15px 40px;
+    font-size: 2.0rem; /* Kích thước font lớn hơn */
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2); /* Bóng đổ nhẹ */
+}
+
+#start-reservation-btn:hover {
+    background-color: #1e9a0e; /* Màu đậm hơn khi hover */
+    transform: translateY(-3px); /* Hiệu ứng nổi nhẹ */
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3); /* Bóng đổ rõ hơn khi hover */
+}
+
+/* Các style khác cho form và sơ đồ bàn đã có */
+/* Đảm bảo rằng form đặt bàn và sơ đồ bàn ăn được ẩn bằng CSS nếu bạn muốn kiểm soát hoàn toàn bằng JS */
+/* (Như tôi đã thêm style="display: none;" trực tiếp vào HTML ở Bước 1) */
+
+/* Nếu bạn muốn đảm bảo .reservation-banner không hiển thị nút "Đặt Bàn" của form khi form chưa hiện */
+/* bạn có thể thêm rule này. Nhưng vì cả form đã bị ẩn rồi, nó có thể không cần thiết lắm. */
+/* Nếu bạn muốn ẩn nút 'Đặt Bàn' mặc định trong form và chỉ dùng nút 'Xác nhận bàn đã chọn' */
+/* thì giữ nguyên style này */
+/* #submit-reservation-btn {
+    display: none;
+} */
