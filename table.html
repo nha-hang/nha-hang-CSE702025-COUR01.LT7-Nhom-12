@@ -98,52 +98,63 @@
                             <h1>Đặt Bàn</h1>
                             <p>Đến với nhà hàng, khách hàng sẽ thấy được không gian thoáng đãng, có những phòng riêng biệt cho hội họp hay sinh nhật với màu sắc tươi sáng.</p>
                         </div>
-                        <div class="container my-5">
-                            <div class="row text-center">
-                                <div class="col-md-4">
-                                    <h5>Số bàn trống:</h5>
-                                    <p id="available-tables" class="font-weight-bold text-success">...</p>
-                                </div>
-                                <div class="col-md-4">
-                                    <h5>Số bàn đã đặt:</h5>
-                                    <p id="reserved-tables" class="font-weight-bold text-danger">...</p>
-                                </div>
-                                <div class="col-md-4">
-                                    <h5>Tổng số bàn:</h5>
-                                    <p id="total-tables" class="font-weight-bold">...</p>
-                                </div>
-                            </div>
-                            <div class="text-center my-4">
-                                <h4>Sơ đồ bàn ăn</h4>
-                                <div id="table-map" class="d-flex flex-wrap justify-content-center">
-                                    <div class="table-area">
-                                        <h4>Khu vực trong nhà</h4>
-                                        <div class="table-layout">
-                                            <div class="table-seat" data-table-id="1">Bàn 1</div>
-                                            <div class="table-seat" data-table-id="2">Bàn 2</div>
-                                            <div class="table-seat" data-table-id="3">Bàn 3</div>
-                                            <div class="table-seat" data-table-id="4">Bàn 4</div>
-                                            <div class="table-seat" data-table-id="5">Bàn 5</div>
-                                            <div class="table-seat" data-table-id="6">Bàn 6</div>
-                                            <div class="table-seat" data-table-id="7">Bàn 7</div>
-                                            <div class="table-seat" data-table-id="8">Bàn 8</div>
-                                            <div class="table-seat" data-table-id="9">Bàn 9</div>
-                                            <div class="table-seat" data-table-id="10">Bàn 10</div>
-                                        </div>
-                                    </div>
-                                    <div class="table-area">
-                                        <h4>Khu vực ngoài trời</h4>
-                                        <div class="table-layout">
-                                            <div class="table-seat" data-table-id="11">Bàn 11</div>
-                                            <div class="table-seat" data-table-id="12">Bàn 12</div>
-                                            <div class="table-seat" data-table-id="13">Bàn 13</div>
-                                            <div class="table-seat" data-table-id="14">Bàn 14</div>
-                                            <div class="table-seat" data-table-id="15">Bàn 15</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>    
+                        <div class="container my-5" id="table-status-and-map">
+    <div class="row text-center">
+        <div class="col-md-4">
+            <h5>Số bàn trống:</h5>
+            <p id="available-tables" class="font-weight-bold text-success">...</p>
+        </div>
+        <div class="col-md-4">
+            <h5>Số bàn đã đặt:</h5>
+            <p id="reserved-tables" class="font-weight-bold text-danger">...</p>
+        </div>
+        <div class="col-md-4">
+            <h5>Tổng số bàn:</h5>
+            <p id="total-tables" class="font-weight-bold">...</p>
+        </div>
+    </div>
+    <div class="text-center my-4">
+        <h4>Sơ đồ bàn ăn</h4>
+        <div id="table-map" class="d-flex flex-wrap justify-content-center">
+            <div class="table-area">
+                <h4>Khu vực trong nhà</h4>
+                <div class="table-layout">
+                    <div class="table-seat square" data-table-id="1">Bàn 1</div>
+                    <div class="table-seat square" data-table-id="2">Bàn 2</div>
+                    <div class="table-seat square" data-table-id="3">Bàn 3</div>
+                    <div class="table-seat square" data-table-id="4">Bàn 4</div>
+                    <div class="table-seat square" data-table-id="5">Bàn 5</div>
+                    <div class="table-seat square" data-table-id="6">Bàn 6</div>
+                    <div class="table-seat square" data-table-id="7">Bàn 7</div>
+                    <div class="table-seat square" data-table-id="8">Bàn 8</div>
+                    <div class="table-seat square" data-table-id="9">Bàn 9</div>
+                    <div class="table-seat square" data-table-id="10">Bàn 10</div>
+                </div>
+            </div>
+            <div class="table-area">
+                <h4>Khu vực ngoài trời</h4>
+                <div class="table-layout">
+                    <div class="table-seat circle" data-table-id="11">Bàn 11</div>
+                    <div class="table-seat circle" data-table-id="12">Bàn 12</div>
+                    <div class="table-seat circle" data-table-id="13">Bàn 13</div>
+                    <div class="table-seat circle" data-table-id="14">Bàn 14</div>
+                    <div class="table-seat circle" data-table-id="15">Bàn 15</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-legend" style="margin-top: 20px; text-align: center;">
+            <h5>Chú thích:</h5>
+            <div class="d-flex justify-content-center">
+                <p class="mr-4"><span class="legend-color-box available"></span> Bàn trống</p>
+                <p class="mr-4"><span class="legend-color-box reserved"></span> Bàn đã đặt</p>
+                <p><span class="legend-color-box selected-table"></span> Bàn đang chọn</p>
+            </div>
+        </div>
+
+        <button type="button" id="confirm-table-selection" class="btn btn-primary" style="margin-top: 30px; padding: 10px 25px; font-size: 1.8rem; display: none;">Xác nhận bàn đã chọn</button>
+    </div>
+</div>    
                         <form id="reservation-form"> <div class="row">
                                 <div class="col-lg-6 col-md-6">
                                     <div class="menu-item">
