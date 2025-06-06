@@ -169,7 +169,7 @@ body
     padding: 15px;
     border-radius: 50%;
 }
-  
+ 
 #myBtn:hover 
 {
     opacity: 0.8;
@@ -408,7 +408,8 @@ footer p
     text-decoration: none;
     opacity: 0.8;
 }
-/* style-table.css */
+
+/* style-table.css - EXISTING STYLES */
 
 /* Phần đặt bàn chung */
 .menu-box {
@@ -478,11 +479,8 @@ footer p
 .reservation-banner {
     margin-top: 30px;
     text-align: center; /* Để căn giữa nút đặt bàn */
-}
-
-.reservation-content {
-    /* Có thể thêm padding hoặc định dạng nền cho phần này nếu cần */
-    padding: 10px 0;
+    /* THIS IS THE CHANGE: HIDE THIS INITIALLY */
+    display: block; /* Sẽ được điều khiển bằng JS */
 }
 
 #submit-reservation-btn { /* Style cho nút "Đặt Bàn" */
@@ -523,55 +521,16 @@ footer p
     color: #721c24; /* Chữ đỏ đậm */
     border: 1px solid #f5c6cb;
 }
-#submit-reservation-btn { /* Style cho nút "Đặt Bàn" */
-    background-color: #23ad10; /* Nền trắng */
-    color: var(--white-color); /* Chữ màu đen */
-    border: 1px solid var(--white-color); /* Viền đen mảnh */
-    padding: 12px 30px; /* Padding để nút có kích thước hợp lý */
-    font-size: 18px; /* Kích thước chữ */
-    border-radius: 0; /* Loại bỏ bo góc, làm nút vuông vắn */
-    cursor: pointer; /* Biểu tượng con trỏ khi di chuột qua */
-    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; /* Hiệu ứng chuyển động mượt mà khi hover */
-    font-weight: normal; /* Chữ bình thường (không đậm) */
-    text-transform: none; /* Giữ nguyên chữ thường (không chữ hoa) */
-    letter-spacing: normal; /* Loại bỏ khoảng cách chữ cái */
-    display: inline-block;
-    box-shadow: none; /* Loại bỏ đổ bóng */
-}
 
-#submit-reservation-btn:hover {
-    background-color: #f0f0f0; /* Thay đổi nền một chút khi hover để tạo hiệu ứng */
-    color: #23ad10;
-    border-color: #23ad10;
-    opacity: 0.9; /* Giảm opacity một chút khi hover */
-}
+/* NEW TABLE MAP AND LEGEND STYLES - INTEGRATED BELOW */
 
-/* Các kiểu cho thông báo thành công/thất bại (đảm bảo vẫn giữ lại) */
-#reservation-message {
-    margin-top: 20px;
-    padding: 10px;
-    border-radius: 5px;
-    font-size: 16px;
-}
-
-#reservation-message.success {
-    background-color: #d4edda; /* Nền xanh nhạt */
-    color: #155724; /* Chữ xanh đậm */
-    border: 1px solid #c3e6cb;
-}
-
-#reservation-message.error {
-    background-color: #f8d7da; /* Nền đỏ nhạt */
-    color: #721c24; /* Chữ đỏ đậm */
-    border: 1px solid #f5c6cb;
-}
 /* Sơ đồ bàn ăn */
 #table-map-container {
     display: flex;
     flex-direction: column; /* Sắp xếp các khu vực theo chiều dọc */
-    align-items: center;   /* Căn giữa các khu vực nếu chúng không chiếm hết chiều rộng */
-    gap: 30px;             /* Khoảng cách giữa khu vực trong nhà và ngoài trời */
-    width: 100%;           /* Đảm bảo chiếm toàn bộ chiều rộng có sẵn */
+    align-items: center;    /* Căn giữa các khu vực nếu chúng không chiếm hết chiều rộng */
+    gap: 30px;              /* Khoảng cách giữa khu vực trong nhà và ngoài trời */
+    width: 100%;            /* Đảm bảo chiếm toàn bộ chiều rộng có sẵn */
 }
 
 /* Sơ đồ bàn ăn cho từng khu vực (Khu vực trong nhà, Khu vực ngoài trời) */
@@ -584,12 +543,15 @@ footer p
     width: 100%; /* Cho phép mỗi khu vực chiếm toàn bộ chiều rộng của container cha */
     max-width: 900px; /* Giới hạn chiều rộng tối đa để không quá lớn trên màn hình rộng */
     box-sizing: border-box; /* Đảm bảo padding và border được tính vào width */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Thêm bóng đổ như hình ảnh */
 }
 
 .table-area h4 {
     text-align: center;
     margin-bottom: 15px;
     color: var(--black-color);
+    font-size: 2.2rem; /* Consistent with previous suggestions */
+    font-weight: 600; /* Consistent with previous suggestions */
 }
 
 .table-layout {
@@ -598,7 +560,7 @@ footer p
     -webkit-overflow-scrolling: touch; /* Tăng tốc độ cuộn trên thiết bị di động */
     gap: 15px; /* Khoảng cách giữa các bàn */
     padding-bottom: 10px; /* Thêm padding dưới để thanh cuộn không che mất nội dung */
-    justify-content: flex-start; /* Bắt đầu sắp xếp từ trái sang */
+    justify-content: center; /* Căn giữa các bàn */
     align-items: flex-start; /* Căn chỉnh các mục theo đầu */
 }
 
@@ -606,7 +568,7 @@ footer p
     flex-shrink: 0; /* Quan trọng: Ngăn các bàn bị co lại */
     width: 120px; /* Tăng chiều rộng để dễ nhìn hơn */
     height: 120px; /* Tăng chiều cao để dễ nhìn hơn */
-    border-radius: 10px;
+    border: 2px solid; /* Sẽ được đặt màu theo trạng thái */
     text-align: center;
     line-height: 1.2; /* Điều chỉnh line-height cho text multi-line */
     display: flex;
@@ -614,51 +576,161 @@ footer p
     justify-content: center;
     align-items: center;
     font-weight: bold;
-    color: #fff;
+    color: var(--white-color); /* Chữ màu trắng trên nền màu bàn */
     cursor: pointer;
     user-select: none;
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    transition: transform 0.2s ease, background-color 0.2s ease;
+    transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease; /* Thêm border-color vào transition */
     padding: 5px;
-    font-size: 14px;
-}
-.table-seat:hover {
-    transform: translateY(-3px);
-    opacity: 0.9;
+    font-size: 1.6rem; /* Kích thước chữ */
 }
 
+/* Hình dạng bàn */
+.table-seat.square {
+    border-radius: 10px; /* Hơi bo tròn góc */
+}
+
+.table-seat.circle {
+    border-radius: 50%; /* Hình tròn */
+}
+
+/* Trạng thái màu sắc của bàn */
 .table-available {
-    background-color: #28a745; /* Màu xanh lá cây cho bàn trống */
+    background-color: #28a745; /* Màu xanh lá cây đậm hơn cho bàn trống */
+    border-color: #28a745; /* Viền cùng màu nền */
 }
 .table-reserved {
-    background-color: #dc3545; /* Màu đỏ cho bàn đã đặt */
+    background-color: #dc3545; /* Màu đỏ đậm hơn cho bàn đã đặt */
+    border-color: #dc3545; /* Viền cùng màu nền */
     cursor: not-allowed;
     opacity: 0.7; /* Giảm độ trong suốt cho bàn đã đặt */
 }
 .table-seat.selected {
     border: 4px solid #ffc107; /* Màu vàng cho bàn được chọn */
     transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(255, 193, 7, 0.7); /* Bóng đổ vàng nổi bật */
 }
+
+.table-seat:hover:not(.table-reserved) { /* Hover effect only for available tables */
+    transform: translateY(-3px);
+    opacity: 0.9;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3); /* Slightly more prominent shadow on hover */
+}
+
+
+/* Chú thích màu sắc */
+.table-legend {
+    margin-top: 30px; /* Tăng khoảng cách từ sơ đồ */
+    text-align: center;
+}
+
+.table-legend h5 {
+    font-size: 1.8rem;
+    margin-bottom: 15px; /* Tăng khoảng cách */
+    color: var(--black-color);
+}
+
+.table-legend p {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px; /* Tăng khoảng cách giữa các mục chú thích */
+    font-size: 1.6rem;
+    color: var(--text-color);
+}
+
+.legend-color-box {
+    width: 28px; /* Tăng kích thước ô màu */
+    height: 28px; /* Tăng kích thước ô màu */
+    margin-right: 12px; /* Tăng khoảng cách */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    display: inline-block;
+    vertical-align: middle;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1); /* Thêm bóng đổ nhẹ */
+}
+
+.legend-color-box.available {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.legend-color-box.reserved {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.legend-color-box.selected-table {
+    background-color: #add8e6; /* Giữ màu xanh dương nhạt cho selected */
+    border-color: #007bff;
+}
+
+/* Nút "Xác nhận bàn đã chọn" */
+#confirm-table-selection {
+    background-color: var(--primary-color);
+    color: var(--white-color);
+    border: none;
+    padding: 12px 30px;
+    font-size: 1.8rem; /* Kích thước font lớn hơn */
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, opacity 0.3s ease, transform 0.2s ease;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* Thêm đổ bóng */
+}
+
+#confirm-table-selection:hover {
+    background-color: #1e9a0e;
+    opacity: 0.9;
+    transform: translateY(-2px); /* Hiệu ứng nổi nhẹ khi hover */
+}
+
 
 /* responsive adjustments */
 @media (max-width: 768px) {
     .table-seat {
         width: 100px;
         height: 100px;
-        font-size: 13px;
+        font-size: 1.4rem; /* Adjusted for smaller screens */
     }
     .table-area {
-        max-width: 90%; /* Giới hạn chiều rộng trên màn hình nhỏ hơn */
+        max-width: 95%; /* Giới hạn chiều rộng trên màn hình nhỏ hơn */
+    }
+    .table-legend p {
+        font-size: 1.4rem;
+    }
+    .legend-color-box {
+        width: 22px;
+        height: 22px;
+    }
+    #confirm-table-selection {
+        font-size: 1.6rem;
+        padding: 10px 20px;
     }
 }
 @media (max-width: 576px) {
     .table-seat {
-        width: 90px;
-        height: 90px;
-        font-size: 12px;
+        width: 80px;
+        height: 80px;
+        font-size: 1.2rem; /* Further adjustment for very small screens */
     }
     .table-area {
         padding: 10px;
         max-width: 100%; /* Cho phép chiếm toàn bộ chiều rộng trên mobile */
+    }
+    .table-layout {
+        justify-content: flex-start; /* Ensure scrolling on small screens */
+    }
+    .table-legend {
+        text-align: left; /* Maybe left align on tiny screens */
+    }
+    .table-legend .d-flex {
+        flex-direction: column; /* Stack legend items vertically */
+        align-items: flex-start;
+    }
+    .table-legend p.mr-4 {
+        margin-right: 0 !important; /* Remove horizontal margin */
+        margin-bottom: 5px; /* Add vertical margin */
     }
 }
