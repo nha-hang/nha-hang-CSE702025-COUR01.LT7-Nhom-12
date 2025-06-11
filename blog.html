@@ -1,1 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog & Đánh giá - Nata.</title>
+    <link rel="shortcut icon" href="./assets/ico/web.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" />
+    <link rel="stylesheet" href="./assets/css/style-blog.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <nav id="nav" class="navbar navbar-expand-lg navbar-light fixed-top">
+            <div class="container">
+                <a href="index.html" class="logo">
+                    <i class="fas fa-utensils"></i>
+                    Nata.
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav m-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="index.html">Trang chủ</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="menu.html">Thực đơn</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="table.html">Đặt bàn</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="blog.html">Blog</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="about.html">Giới thiệu</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="contact.html">Liên hệ</a>
+                        </li>
+                    </ul>
+                    <div class="icons">
+                        <div class="fas fa-search" id="user-login" title="Tìm kiếm" data-toggle="modal" data-target="#modelId"></div>
+                    </div>
+                </div>
+            </div>
+        </nav>
 
+        <div class="modal-search">
+            <div class="modal fade" id="modelId" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+                <div class="modal-dialog" role="document" >
+                    <div class="modal-content modal-sch-main">
+                        <div class="modal-body">
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control search-box" placeholder="Bạn cần tìm kiếm những gì?" aria-label="Bạn cần tìm kiếm những gì?" aria-describedby="basic-addon2">
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary search-btn" type="button" title="Tìm kiếm">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button onclick="topFunction()" id="myBtn" title="Lên đầu trang"><i class="fas fa-arrow-up"></i></button>
+    </header>
+
+    <main>
+        <div class="page-banner">
+            <div class="container">
+                <h1>Blog & Đánh giá</h1>
+                <p>Đọc những bài viết mới nhất và chia sẻ cảm nhận của bạn</p>
+            </div>
+        </div>
+        <div class="container">
+            <ul class="page-banner-list">
+                <li>
+                    <a href="index.html">Trang chủ</a>
+                </li>
+                <i class="fas fa-chevron-right"></i>
+                <li>
+                    <a href="blog.html">Blog & Đánh giá</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="blog-container container">
+            <div class="section-title text-center my-5">
+                <h2 style="font-size: 3.8rem; color: var(--black-color); font-weight: 600;">Bài viết mới nhất</h2>
+                <div class="underline" style="width: 80px; height: 4px; background-color: var(--primary-color); margin: 10px auto 30px;"></div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="card blog-post h-100">
+                        <img src="./assets/img/gallery/8.jpg" class="card-img-top" alt="Blog Post 1">
+                        <div class="card-body">
+                            <h4 class="card-title">Khám phá hương vị đích thực tại Nata.</h4>
+                            <p class="card-text">Chào mừng bạn đến với Nata. - nơi mà mỗi món ăn là một câu chuyện về hương vị và sự tinh tế. Chúng tôi tự hào mang đến những trải nghiệm ẩm thực độc đáo, kết hợp giữa truyền thống và sự sáng tạo.</p>
+                            <a href="#" class="btn btn-primary mt-3">Đọc thêm</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="card blog-post h-100">
+                        <img src="./assets/img/gallery/fine-dining.jpg" class="card-img-top" alt="Blog Post 2">
+                        <div class="card-body">
+                            <h4 class="card-title">Nghệ thuật ẩm thực và không gian sang trọng</h4>
+                            <p class="card-text">Tại Nata., chúng tôi tin rằng ẩm thực không chỉ là việc nếm trải món ăn, mà còn là một trải nghiệm nghệ thuật. Không gian nhà hàng được thiết kế tinh tế, mang lại cảm giác ấm cúng và sang trọng, lý tưởng cho mọi bữa tiệc.</p>
+                            <a href="#" class="btn btn-primary mt-3">Đọc thêm</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="reviews-section container mt-5">
+            <div class="section-title text-center my-5">
+                <h2 style="font-size: 3.8rem; color: var(--black-color); font-weight: 600;">Đánh giá của khách hàng</h2>
+                <div class="underline" style="width: 80px; height: 4px; background-color: var(--primary-color); margin: 10px auto 30px;"></div>
+            </div>
+
+            <div class="review-form card p-4 mb-5">
+                <h3 class="text-center mb-4" style="font-size: 2.5rem; color: var(--black-color);">Để lại đánh giá của bạn</h3>
+                <form id="reviewForm">
+                    <div class="form-group">
+                        <label for="reviewerName" style="font-size: 1.6rem;">Tên của bạn:</label>
+                        <input type="text" class="form-control" id="reviewerName" name="reviewerName" required style="font-size: 1.6rem;">
+                    </div>
+                    <div class="form-group">
+                        <label for="rating" style="font-size: 1.6rem;">Đánh giá sao:</label>
+                        <div class="star-rating d-flex align-items-center" style="font-size: 2.5rem; color: #f8d64e;">
+                            <i class="far fa-star" data-rating="1"></i>
+                            <i class="far fa-star" data-rating="2"></i>
+                            <i class="far fa-star" data-rating="3"></i>
+                            <i class="far fa-star" data-rating="4"></i>
+                            <i class="far fa-star" data-rating="5"></i>
+                            <input type="hidden" name="rating" id="selectedRating" value="0">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="reviewComment" style="font-size: 1.6rem;">Bình luận của bạn:</label>
+                        <textarea class="form-control" id="reviewComment" name="reviewComment" rows="5" required style="font-size: 1.6rem;"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-submit-review btn-block" style="font-size: 1.8rem; padding: 10px 20px;">Gửi đánh giá</button>
+                    <div id="reviewMessage" class="mt-3 text-center" style="font-size: 1.6rem;"></div>
+                </form>
+            </div>
+
+            <div class="user-reviews-display card p-4">
+                <h3 class="text-center mb-4" style="font-size: 2.5rem; color: var(--black-color);">Các đánh giá khác</h3>
+                <div id="userReviewsList">
+                    </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="row" id="up-footer">
+                <div class="col-lg-4 col-md-6 ft-mt">
+                    <div class="footer-socials">
+                        <a href="index.html" class="logo">
+                            <i class="fas fa-utensils"></i>
+                            Nata.
+                        </a>
+                        <p>
+                            Chào mừng đến với Nata. - điểm đến lý tưởng cho những người yêu ẩm thực! Chúng tôi tự hào mang đến những món ăn ngon miệng, được chế biến từ nguyên liệu tươi ngon nhất và phục vụ trong không gian ấm cúng, sang trọng.
+                        </p>
+                        <div class="socials-list">
+                            <a href="https://www.facebook.com" title="Facebook"><i><i class="fab fa-facebook"></i></i></a>
+                            <a href="https://www.instagram.com" title="Instagram"><i><i class="fab fa-instagram"></i></i></a>
+                            <a href="https://youtu.be/dQw4w9WgXcQ" title="YouTube"><i><i class="fab fa-youtube"></i></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 ft-mt">
+                    <div class="contact-list">
+                        <h3>Liên hệ</h3>
+                        <p><i class="fas fa-map-marker-alt"></i>Số 18, ngõ 111, Triều Khúc, Tân Triều, Thanh Trì, Hà Nội</p>
+                        <p><i class="fas fa-phone"></i>0963385735</p>
+                        <p><i class="fas fa-envelope"></i>natarestaurant@gmail.com</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 ft-mt">
+                    <div class="time-info">
+                        <h3>Giờ mở cửa</h3>
+                        <p>Thứ 2 - Thứ 6: Từ 8:00 đến 22:00</p>
+                        <p>Thứ 7: Từ 7:00 đến 23:00</p>
+                        <p>Chủ nhật: Từ 7:00 đến 23:30</p>
+                    </div>
+                </div>
+            </div>
+            <div id="down-footer">
+                <p>Copyright &copy; 2025 <a href="#" data-toggle="modal" data-target="#modelId2">Nhóm 18.</a></p>
+            </div>
+        </div>
+
+        <div class="modal fade" id="modelId2" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                        <div class="modal-header">
+                                <h5 class="modal-title">Thành viên</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                            </div>
+                    <div class="modal-body">
+                        <div class="container-fluid">
+                            <p>Lê Đức Anh</p>
+                            <p>Lê Đình Đức Anh</p>
+                            <p>Nguyễn Quốc Thái</p>
+                            <p>Đỗ Phương Nam</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script src="./assets/js/script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const reviewForm = document.getElementById('reviewForm');
+            const stars = document.querySelectorAll('.star-rating .fa-star');
+            const selectedRatingInput = document.getElementById('selectedRating');
+            const reviewMessage = document.getElementById('reviewMessage');
+            const userReviewsList = document.getElementById('userReviewsList');
+
+            let currentRating = 0;
+
+            // Function to fetch reviews
+            async function fetchReviewsAndDisplay() {
+                try {
+                    const response = await fetch('/api/reviews');
+                    const result = await response.json();
+                    if (response.ok && result.success) {
+                        userReviewsList.innerHTML = ''; // Clear existing reviews
+                        if (result.reviews.length === 0) {
+                            userReviewsList.innerHTML = '<p style="font-size: 1.6rem; color: #777; text-align: center;">Chưa có đánh giá nào. Hãy là người đầu tiên!</p>';
+                        } else {
+                            result.reviews.forEach(review => {
+                                const reviewDate = new Date(review.review_date).toLocaleDateString('vi-VN');
+                                addReviewToDisplay(review.reviewer_name, review.rating, review.comment, reviewDate);
+                            });
+                        }
+                    } else {
+                        userReviewsList.innerHTML = '<p style="color: red; font-size: 1.6rem; text-align: center;">Không thể tải đánh giá. Vui lòng thử lại sau.</p>';
+                    }
+                } catch (error) {
+                    console.error('Error fetching reviews:', error);
+                    userReviewsList.innerHTML = '<p style="color: red; font-size: 1.6rem; text-align: center;">Lỗi kết nối khi tải đánh giá.</p>';
+                }
+            }
+
+            // Star rating functionality
+            stars.forEach(star => {
+                star.addEventListener('mouseover', function() {
+                    resetStars();
+                    const rating = parseInt(this.dataset.rating);
+                    for (let i = 0; i < rating; i++) {
+                        stars[i].classList.remove('far');
+                        stars[i].classList.add('fas');
+                    }
+                });
+
+                star.addEventListener('mouseout', function() {
+                    resetStars();
+                    for (let i = 0; i < currentRating; i++) {
+                        stars[i].classList.remove('far');
+                        stars[i].classList.add('fas');
+                    }
+                });
+
+                star.addEventListener('click', function() {
+                    currentRating = parseInt(this.dataset.rating);
+                    selectedRatingInput.value = currentRating;
+                    resetStars();
+                    for (let i = 0; i < currentRating; i++) {
+                        stars[i].classList.remove('far');
+                        stars[i].classList.add('fas');
+                    }
+                });
+            });
+
+            // Handle form submission
+            reviewForm.addEventListener('submit', async function(event) {
+                event.preventDefault();
+
+                const reviewerName = document.getElementById('reviewerName').value;
+                const rating = selectedRatingInput.value;
+                const reviewComment = document.getElementById('reviewComment').value;
+
+                if (!reviewerName || !reviewComment || rating === '0') {
+                    reviewMessage.textContent = 'Vui lòng điền đầy đủ thông tin và chọn số sao.';
+                    reviewMessage.style.color = 'red';
+                    return;
+                }
+
+                try {
+                    const response = await fetch('/api/add-review', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ reviewer_name: reviewerName, rating: parseInt(rating), comment: reviewComment })
+                    });
+                    const result = await response.json();
+
+                    if (response.ok && result.success) {
+                        reviewMessage.textContent = result.message;
+                        reviewMessage.style.color = 'green';
+                        reviewForm.reset();
+                        currentRating = 0;
+                        resetStars();
+                        fetchReviewsAndDisplay(); // Reload reviews after successful submission
+                    } else {
+                        reviewMessage.textContent = result.error || 'Có lỗi xảy ra khi gửi đánh giá.';
+                        reviewMessage.style.color = 'red';
+                    }
+                } catch (error) {
+                    console.error('Lỗi khi gửi đánh giá:', error);
+                    reviewMessage.textContent = 'Lỗi kết nối. Vui lòng thử lại sau.';
+                    reviewMessage.style.color = 'red';
+                }
+            });
+
+            function addReviewToDisplay(name, rating, comment, date) {
+                const userReviewsList = document.getElementById('userReviewsList');
+                const newReviewDiv = document.createElement('div');
+                newReviewDiv.classList.add('user-review', 'card', 'p-3', 'mb-3'); // Add Bootstrap card classes
+                newReviewDiv.style.fontSize = '1.6rem'; // Consistent font size
+
+                const starsHtml = Array(5).fill().map((_, i) =>
+                    `<i class=\"${i < rating ? 'fas' : 'far'} fa-star\" style="color: #f8d64e;"></i>`
+                ).join('');
+
+                const displayDate = date ? date : new Date().toLocaleDateString('vi-VN'); // Use provided date or current date
+
+                newReviewDiv.innerHTML = `
+                    <div class=\"review-header d-flex justify-content-between align-items-center mb-2\">
+                        <span class=\"reviewer-name\" style="font-weight: bold; color: var(--black-color);">${name}</span>
+                        <span class=\"review-date text-muted\">${displayDate}</span>
+                    </div>
+                    <div class=\"review-rating mb-2\">
+                        ${starsHtml}
+                    </div>
+                    <p class=\"review-text mb-0\" style="color: var(--text-color);">${comment}</p>
+                `;
+                userReviewsList.prepend(newReviewDiv); // Add new review to the top
+            }
+
+            function resetStars() {
+                selectedRatingInput.value = 0;
+                stars.forEach(s => {
+                    s.classList.remove('fas');
+                    s.classList.add('far');
+                });
+            }
+
+            // Fetch and display reviews when the page loads
+            fetchReviewsAndDisplay();
+        });
+    </script>
+</body>
+</html>
