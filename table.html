@@ -17,39 +17,40 @@
 <body>
     <header>
         <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="nav">
-            <a class="navbar-brand logo" href="index.html">
-                <i class="fas fa-utensils"></i>
-                Nata.
-            </a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav m-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.html">Trang chủ</a>
-                    </li>
-                    <li class="nav-item">
+            <div class="container"><a class="navbar-brand logo" href="index.html">
+                    <i class="fas fa-utensils"></i>
+                    Nata.
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav m-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="index.html">Trang chủ</a>
+                        </li>
+                        <li class="nav-item">
                         <a class="nav-link" href="about.html">Về chúng tôi</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="menu.html">Thực đơn</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="table.html">Đặt bàn</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="blog.html">Blog</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="contact.html">Liên hệ</a>
-                    </li>
-                </ul>
-                <div class="icons">
-                    <i class="fas fa-search" data-toggle="modal" data-target="#modelId"></i>
-                    <i class="fas fa-heart"></i>
-                    <a href="cart.html"><i class="fas fa-shopping-cart"></i></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="menu.html">Thực đơn</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="table.html">Đặt bàn</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="blog.html">Blog</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="contact.html">Liên hệ</a>
+                        </li>
+                    </ul>
+                    <div class="icons">
+                        <i class="fas fa-search" data-toggle="modal" data-target="#modelId"></i>
+                        <i class="fas fa-heart"></i>
+                        <a href="cart.html"><i class="fas fa-shopping-cart"></i></a>
+                    </div>
                 </div>
             </div>
         </nav>
@@ -61,7 +62,7 @@
                 <div class="modal-header">
                     <h5 class="modal-title" id="modelTitleId">Tìm kiếm món ăn</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+                        <span aria-hidden="true">×</span>
                     </button>
                 </div>
                 <div class="modal-body">
@@ -78,23 +79,23 @@
     </div>
 
     <main>
-        <section class="page-banner">
+        <div class="page-banner">
             <div class="container">
-                <div class="row">
-                    <div class="col-sm-12 col-md-6">
-                        <h1>Đặt bàn</h1>
-                        <p>Trải nghiệm ẩm thực tuyệt vời tại nhà hàng của chúng tôi</p>
-                    </div>
-                    <div class="col-sm-12 col-md-6">
-                        <ul class="page-banner-list">
-                            <li><a href="index.html">Trang chủ</a></li>
-                            <li><i class="fas fa-long-arrow-alt-right"></i></li>
-                            <li><a href="table.html">Đặt bàn</a></li>
-                        </ul>
-                    </div>
-                </div>
+                <h1>Đặt bàn</h1>
+                <p>đặt bàn cho bạn hoặc cho nhiều người</p>
             </div>
-        </section>
+        </div>
+        <div class="container">
+            <ul class="page-banner-list">
+                <li>
+                    <a href="index.html">Trang chủ</a>
+                </li>
+                <i class="fas fa-chevron-right"></i>
+                <li>
+                    <a href="table.html">Đặt bàn</a>
+                </li>
+            </ul>
+        </div>
 
         <section class="container my-5 text-center" id="initial-reservation-section">
             <div class="menu-box">
@@ -107,6 +108,32 @@
                 </button>
             </div>
         </section>
+
+        <section class="container my-5 text-center" id="manage-reservation-section">
+            <div class="menu-box">
+                <div class="menu-title">
+                    <h1>Quản lý đặt bàn</h1>
+                    <p>Kiểm tra và hủy đặt bàn của bạn.</p>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 menu-item">
+                        <label for="search_phone">Số điện thoại:</label>
+                        <input type="tel" id="search_phone" name="search_phone" class="form-input">
+                    </div>
+                    <div class="col-md-6 menu-item">
+                        <label for="search_email">Email (tùy chọn):</label>
+                        <input type="email" id="search_email" name="search_email" class="form-input">
+                    </div>
+                </div>
+                <button type="button" id="search-reservations-btn" class="btn btn-secondary">
+                    Tìm kiếm đặt bàn
+                </button>
+                <div id="customer-reservations-list" class="mt-4">
+                    </div>
+                <div id="reservation-search-message" class="mt-3 text-center"></div>
+            </div>
+        </section>
+
 
         <div class="container my-5" id="table-status-and-map" style="display: none;">
             <div class="row text-center">
@@ -184,19 +211,25 @@
             </div>
             <div class="row">
                 <div class="col-md-6 menu-item">
-                    <label for="reservation_date">Ngày đặt:</label>
-                    <input type="date" id="reservation_date" name="reservation_date" class="form-input" required>
+                    <label for="customer_email">Email (tùy chọn):</label>
+                    <input type="email" id="customer_email" name="customer_email" class="form-input">
                 </div>
                 <div class="col-md-6 menu-item">
-                    <label for="reservation_time">Giờ đặt:</label>
-                    <input type="time" id="reservation_time" name="reservation_time" class="form-input" required>
+                    <label for="reservation_date">Ngày đặt:</label>
+                    <input type="date" id="reservation_date" name="reservation_date" class="form-input" required>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-6 menu-item">
+                    <label for="reservation_time">Giờ đặt:</label>
+                    <input type="time" id="reservation_time" name="reservation_time" class="form-input" required>
+                </div>
+                <div class="col-md-6 menu-item">
                     <label for="number_of_guests">Số lượng khách:</label>
                     <input type="number" id="number_of_guests" name="number_of_guests" class="form-input" min="1" required>
                 </div>
+            </div>
+            <div class="row">
                 <div class="col-md-6 menu-item">
                     <label for="table_id">Bàn đã chọn:</label>
                     <input type="text" id="table_id" name="table_id" class="form-input" readonly required>
@@ -215,83 +248,63 @@
     </main>
 
     <footer>
-        <div class="container-fluid pt-5 bg-dark">
-            <div class="row px-xl-5">
-                <div class="col-lg-8 col-md-12">
-                    <div class="row">
-                        <div class="col-md-4 mb-5 ft-mt">
-                            <h3 class="text-primary mb-4">Liên hệ</h3>
-                            <p class="mb-2">
-                                <i class="fa fa-map-marker-alt text-primary mr-3"></i>123 Đường ABC, Hà Nội, Việt Nam
-                            </p>
-                            <p class="mb-2">
-                                <i class="fa fa-envelope text-primary mr-3"></i>info@example.com
-                            </p>
-                            <p class="mb-0">
-                                <i class="fa fa-phone-alt text-primary mr-3"></i>+012 345 67890
-                            </p>
-                        </div>
-                        <div class="col-md-4 mb-5 ft-mt">
-                            <h3 class="text-primary mb-4">Theo dõi chúng tôi</h3>
-                            <div class="d-flex justify-content-start mt-4">
-                                <a class="btn btn-outline-light btn-social mr-2" href="#"><i
-                                        class="fab fa-twitter"></i></a>
-                                <a class="btn btn-outline-light btn-social mr-2" href="#"><i
-                                        class="fab fa-facebook-f"></i></a>
-                                <a class="btn btn-outline-light btn-social mr-2" href="#"><i
-                                        class="fab fa-linkedin-in"></i></a>
-                                <a class="btn btn-outline-light btn-social" href="#"><i
-                                        class="fab fa-instagram"></i></a>
+        <div class="container">
+            <div id="up-footer">
+                <div class="row">
+                    <div class="col-lg-4 col-md-6">
+                        <div class="ft-mt">
+                            <div class="footer-socials">
+                                <a href="index.html" class="logo">
+                                    <i class="fas fa-utensils"></i>
+                                    Nata.
+                                </a>
+                                <p>Nata. là một lựa chọn tốt cho những người vừa muốn có không gian ẩm thực sang trọng mà giá cả phải chăng.</p>
+                                <div class="socials-list">
+                                    <a href="https://www.facebook.com" title="Facebook"><i><i class="fab fa-facebook"></i></i></a>
+                                    <a href="https://www.instagram.com" title="Instagram"><i><i class="fab fa-instagram"></i></i></a>
+                                    <a href="https://youtu.be/dQw4w9WgXcQ" title="YouTube"><i><i class="fab fa-youtube"></i></i></a>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-4 mb-5 ft-mt">
-                            <h3 class="text-primary mb-4">Giờ mở cửa</h3>
-                            <p class="mb-2">Thứ 2 - Thứ 6: 09:00 AM - 10:00 PM</p>
-                            <p class="mb-2">Thứ 7 - Chủ Nhật: 08:00 AM - 11:00 PM</p>
                         </div>
                     </div>
-                </div>
-                <div class="col-lg-4 col-md-12 mb-5">
-                    <h3 class="text-primary mb-4">Đăng ký nhận tin</h3>
-                    <p>Nhận các ưu đãi và tin tức mới nhất từ nhà hàng của chúng tôi!</p>
-                    <form action="">
-                        <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Email của bạn">
-                            <div class="input-group-append">
-                                <button class="btn btn-primary">Đăng ký</button>
-                            </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="contact-list ft-mt">
+                            <h3>Liên hệ</h3>
+                            <p><i class="fas fa-map-marker-alt"></i>P. Nguyễn Trác, Yên Nghĩa, Hà Đông, Hà Nội</p>
+                            <p><i class="fas fa-phone"></i>1900 1900</p>
+                            <p><i class="far fa-envelope"></i>hotro@email.com</p>
                         </div>
-                    </form>
-                    <h6 class="text-secondary mt-4 mb-3">Theo dõi trên</h6>
-                    <div class="d-flex">
-                        <a class="btn btn-primary btn-square mr-2" href="#"><i class="fab fa-twitter"></i></a>
-                        <a class="btn btn-primary btn-square mr-2" href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a class="btn btn-primary btn-square mr-2" href="#"><i class="fab fa-linkedin-in"></i></a>
-                        <a class="btn btn-primary btn-square" href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="time-info ft-mt">
+                            <h3>Thời gian mở cửa</h3>
+                            <p>Thứ 2 - Thứ 6: Từ 8:15 đến 22:00</p>
+                            <p>Thứ 7: Từ 8:00 đến 23:00</p>
+                            <p>Chủ nhật: Từ 7:00 đến 23:30</p>
+                        </div>
                     </div>
                 </div>
             </div>
             <div id="down-footer">
-                <p>Copyright &copy; 2025 <a href="" data-toggle="modal" data-target="#modelId2">Nhóm 18.</a></p>
+                <p>Copyright © 2025 <a href="" data-toggle="modal" data-target="#modelId2">Nhóm 18.</a></p>
             </div>
         </div>
-        
+
         <div class="modal fade" id="modelId2" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                         <div class="modal-header">
                                 <h5 class="modal-title">Thành viên</h5>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
+                                        <span aria-hidden="true">×</span>
                                     </button>
                             </div>
                     <div class="modal-body">
                         <div class="container-fluid">
-                            <p>Nguyễn Đình Quý</p>
-                            <p>Vương Tiến Thành</p>
-                            <p>Trần Xuân Tiến</p>
-                            <p>Lê Thu Trang</p>
-                            <p>Nguyễn Thị Kim Hằng</p>
+                            <p>Lê Đức Anh</p>
+                            <p>Lê Đình Đức Anh</p>
+                            <p>Nguyễn Quốc Thái</p>
+                            <p>Đỗ Phương Nam</p>
                         </div>
                     </div>
                 </div>
@@ -308,82 +321,79 @@
             const reservationMessageDiv = document.getElementById('reservation-message');
             const tableIdInput = document.getElementById('table_id');
 
+            // NEW Elements for managing reservations
+            const manageReservationSection = document.getElementById('manage-reservation-section');
+            const searchReservationsBtn = document.getElementById('search-reservations-btn');
+            const searchPhoneInput = document.getElementById('search_phone');
+            const searchEmailInput = document.getElementById('search_email');
+            const customerReservationsList = document.getElementById('customer-reservations-list');
+            const reservationSearchMessage = document.getElementById('reservation-search-message');
+
+
             let selectedTableId = null;
 
             // Hàm cập nhật trạng thái bàn và số liệu thống kê
-            function updateTableMapAndCounts() {
-                // Giả lập dữ liệu bàn từ API hoặc backend
-                // Trong thực tế, bạn sẽ lấy dữ liệu này từ máy chủ
-                const tables = [
-                    { id: '1', status: 'available' },
-                    { id: '2', status: 'available' },
-                    { id: '3', status: 'reserved' },
-                    { id: '4', status: 'available' },
-                    { id: '5', status: 'available' },
-                    { id: '6', status: 'reserved' },
-                    { id: '7', status: 'available' },
-                    { id: '8', status: 'available' },
-                    { id: '9', status: 'reserved' },
-                    { id: '10', status: 'available' },
-                    { id: '11', status: 'available' },
-                    { id: '12', status: 'reserved' },
-                    { id: '13', status: 'available' },
-                    { id: '14', status: 'available' },
-                    { id: '15', status: 'reserved' }
-                ];
+            async function updateTableMapAndCounts() {
+                try {
+                    const response = await fetch('/api/tables');
+                    const tables = await response.json();
 
-                let availableCount = 0;
-                let reservedCount = 0;
+                    let availableCount = 0;
+                    let reservedCount = 0;
 
-                document.querySelectorAll('.table-seat').forEach(tableDiv => {
-                    const tableId = tableDiv.dataset.tableId;
-                    const table = tables.find(t => t.id === tableId);
+                    document.querySelectorAll('.table-seat').forEach(tableDiv => {
+                        const tableId = tableDiv.dataset.tableId;
+                        const table = tables.find(t => t.id == tableId); // Use == for comparison as table.id might be number
 
-                    // Xóa tất cả các class trạng thái cũ
-                    tableDiv.classList.remove('table-available', 'table-reserved', 'selected');
+                        // Xóa tất cả các class trạng thái cũ
+                        tableDiv.classList.remove('table-available', 'table-reserved', 'selected');
 
-                    if (table) {
-                        if (table.status === 'available') {
-                            tableDiv.classList.add('table-available');
-                            tableDiv.style.cursor = 'pointer';
-                            availableCount++;
-                        } else {
-                            tableDiv.classList.add('table-reserved');
-                            tableDiv.style.cursor = 'not-allowed';
-                            reservedCount++;
-                        }
-                    }
-
-                    // Loại bỏ và thêm lại event listener để tránh trùng lặp
-                    const oldTableDiv = tableDiv;
-                    const newTableDiv = oldTableDiv.cloneNode(true); // Clone node để loại bỏ event listener cũ
-                    oldTableDiv.parentNode.replaceChild(newTableDiv, oldTableDiv);
-
-                    // Thêm event listener mới vào newTableDiv
-                    newTableDiv.addEventListener('click', () => {
-                        if (newTableDiv.classList.contains('table-reserved')) {
-                            alert('Bàn này đã có người đặt. Vui lòng chọn bàn khác.');
-                            return;
+                        if (table) {
+                            if (table.status === 'available') {
+                                tableDiv.classList.add('table-available');
+                                tableDiv.style.cursor = 'pointer';
+                                availableCount++;
+                            } else {
+                                tableDiv.classList.add('table-reserved');
+                                tableDiv.style.cursor = 'not-allowed';
+                                reservedCount++;
+                            }
                         }
 
-                        // Xóa trạng thái selected khỏi tất cả các bàn
-                        document.querySelectorAll('.table-seat').forEach(div => {
-                            div.classList.remove('selected');
+                        // Loại bỏ và thêm lại event listener để tránh trùng lặp
+                        const oldTableDiv = tableDiv;
+                        const newTableDiv = oldTableDiv.cloneNode(true); // Clone node để loại bỏ event listener cũ
+                        oldTableDiv.parentNode.replaceChild(newTableDiv, oldTableDiv);
+
+                        // Thêm event listener mới vào newTableDiv
+                        newTableDiv.addEventListener('click', () => {
+                            if (newTableDiv.classList.contains('table-reserved')) {
+                                alert('Bàn này đã có người đặt. Vui lòng chọn bàn khác.');
+                                return;
+                            }
+
+                            // Xóa trạng thái selected khỏi tất cả các bàn
+                            document.querySelectorAll('.table-seat').forEach(div => {
+                                div.classList.remove('selected');
+                            });
+
+                            // Thêm trạng thái selected vào bàn đã chọn
+                            newTableDiv.classList.add('selected');
+                            selectedTableId = newTableDiv.dataset.tableId;
+                            tableIdInput.value = `Bàn ${selectedTableId}`; // Hiển thị ID bàn trong input form
+
+                            // Hiển thị nút xác nhận
+                            confirmTableSelectionBtn.style.display = 'block';
                         });
-
-                        // Thêm trạng thái selected vào bàn đã chọn
-                        newTableDiv.classList.add('selected');
-                        selectedTableId = newTableDiv.dataset.tableId;
-                        tableIdInput.value = `Bàn ${selectedTableId}`; // Hiển thị ID bàn trong input form
-
-                        // Hiển thị nút xác nhận
-                        confirmTableSelectionBtn.style.display = 'block';
                     });
-                });
 
-                document.getElementById('available-tables').textContent = availableCount;
-                document.getElementById('reserved-tables').textContent = reservedCount;
-                document.getElementById('total-tables').textContent = tables.length;
+                    document.getElementById('available-tables').textContent = availableCount;
+                    document.getElementById('reserved-tables').textContent = reservedCount;
+                    document.getElementById('total-tables').textContent = tables.length;
+                } catch (error) {
+                    console.error('Lỗi khi lấy trạng thái bàn:', error);
+                    alert('Không thể tải trạng thái bàn. Vui lòng thử lại sau.');
+                }
             }
 
             // --- Logic mới: Điều khiển hiển thị các phần ---
@@ -394,6 +404,7 @@
             // Khi click vào nút "Bắt đầu đặt bàn ngay!"
             startReservationBtn.addEventListener('click', () => {
                 initialReservationSection.style.display = 'none'; // Ẩn phần khởi tạo
+                manageReservationSection.style.display = 'none'; // Ẩn phần quản lý đặt bàn
                 tableStatusAndMap.style.display = 'block'; // Hiện sơ đồ bàn
                 updateTableMapAndCounts(); // Cập nhật trạng thái bàn ngay lập tức
                 // Cuộn đến sơ đồ bàn
@@ -430,20 +441,15 @@
                 const formData = new FormData(this);
                 const data = Object.fromEntries(formData.entries());
                 data.table_id = selectedTableId; // Đảm bảo gửi đúng ID bàn đã chọn
+                data.customer_email = data.customer_email || ''; // Ensure email is not 'undefined' if empty
 
                 try {
-                    // Giả lập gửi dữ liệu đến máy chủ
-                    // Trong thực tế, bạn sẽ gửi AJAX request (fetch hoặc XMLHttpRequest)
-                    const response = await new Promise(resolve => {
-                        setTimeout(() => {
-                            // Giả lập kết quả thành công hoặc thất bại
-                            const success = Math.random() > 0.1; // 90% thành công, 10% thất bại
-                            if (success) {
-                                resolve({ ok: true, json: () => Promise.resolve({ success: true, message: 'Đặt bàn thành công! Chúng tôi sẽ liên hệ lại với bạn để xác nhận.' }) });
-                            } else {
-                                resolve({ ok: false, json: () => Promise.resolve({ success: false, message: 'Có lỗi xảy ra trong quá trình đặt bàn. Vui lòng thử lại.' }) });
-                            }
-                        }, 1000); // Giả lập độ trễ mạng
+                    const response = await fetch('/api/reservations', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data),
                     });
 
                     const result = await response.json();
@@ -461,9 +467,10 @@
                         initialReservationSection.style.display = 'block'; // Hiển thị lại phần khởi tạo
                         tableStatusAndMap.style.display = 'none'; // Ẩn sơ đồ bàn
                         initialReservationSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        updateTableMapAndCounts(); // Cập nhật lại trạng thái bàn sau khi đặt thành công
 
                     } else {
-                        reservationMessageDiv.textContent = result.message || 'Lỗi kết nối máy chủ. Vui lòng thử lại sau.';
+                        reservationMessageDiv.textContent = result.error || 'Lỗi kết nối máy chủ. Vui lòng thử lại sau.';
                         reservationMessageDiv.classList.add('error');
                     }
                 } catch (error) {
@@ -473,8 +480,97 @@
                 }
             });
 
-            // Khởi tạo sơ đồ bàn khi trang tải nếu bạn muốn nó hiện ngay (nhưng ở đây đã ẩn ban đầu)
-            // updateTableMapAndCounts(); 
+            // NEW: Logic for searching and canceling reservations
+            searchReservationsBtn.addEventListener('click', fetchCustomerReservations);
+
+            async function fetchCustomerReservations() {
+                const phone = searchPhoneInput.value.trim();
+                const email = searchEmailInput.value.trim();
+                customerReservationsList.innerHTML = ''; // Clear previous results
+                reservationSearchMessage.textContent = '';
+                reservationSearchMessage.classList.remove('success', 'error');
+
+                if (!phone && !email) {
+                    reservationSearchMessage.textContent = 'Vui lòng nhập số điện thoại hoặc email để tìm kiếm.';
+                    reservationSearchMessage.classList.add('error');
+                    return;
+                }
+
+                let queryParams = new URLSearchParams();
+                if (phone) queryParams.append('phone', phone);
+                if (email) queryParams.append('email', email);
+
+                try {
+                    const response = await fetch(`/api/customer-reservations?${queryParams.toString()}`);
+                    const result = await response.json();
+
+                    if (result.success && result.reservations.length > 0) {
+                        result.reservations.forEach(reservation => {
+                            const reservationDiv = document.createElement('div');
+                            reservationDiv.classList.add('card', 'mb-3', 'reservation-card');
+                            reservationDiv.innerHTML = `
+                                <div class="card-body">
+                                    <h5 class="card-title">Đặt bàn #${reservation.id} - ${reservation.table_name}</h5>
+                                    <p class="card-text"><strong>Khách hàng:</strong> ${reservation.customer_name}</p>
+                                    <p class="card-text"><strong>Điện thoại:</strong> ${reservation.customer_phone}</p>
+                                    <p class="card-text"><strong>Ngày:</strong> ${reservation.reservation_date}</p>
+                                    <p class="card-text"><strong>Giờ:</strong> ${reservation.reservation_time.substring(0, 5)}</p>
+                                    <p class="card-text"><strong>Số khách:</strong> ${reservation.number_of_guests}</p>
+                                    <p class="card-text"><strong>Trạng thái:</strong> <span class="badge badge-${reservation.status === 'pending' ? 'warning' : 'success'}">${reservation.status}</span></p>
+                                    ${reservation.notes ? `<p class="card-text"><strong>Ghi chú:</strong> ${reservation.notes}</p>` : ''}
+                                    <button class="btn btn-danger cancel-reservation-btn mt-2" data-reservation-id="${reservation.id}">Hủy đặt bàn</button>
+                                </div>
+                            `;
+                            customerReservationsList.appendChild(reservationDiv);
+                        });
+
+                        // Attach event listeners to new cancel buttons
+                        document.querySelectorAll('.cancel-reservation-btn').forEach(button => {
+                            button.addEventListener('click', handleCancelReservation);
+                        });
+
+                    } else if (result.success && result.reservations.length === 0) {
+                        reservationSearchMessage.textContent = 'Không tìm thấy đặt bàn nào với thông tin đã cung cấp.';
+                        reservationSearchMessage.classList.add('info'); // You might want a different class for info
+                    } else {
+                        reservationSearchMessage.textContent = result.error || 'Lỗi khi tìm kiếm đặt bàn.';
+                        reservationSearchMessage.classList.add('error');
+                    }
+                } catch (error) {
+                    console.error('Lỗi tìm kiếm đặt bàn:', error);
+                    reservationSearchMessage.textContent = 'Lỗi kết nối máy chủ khi tìm kiếm đặt bàn.';
+                    reservationSearchMessage.classList.add('error');
+                }
+            }
+
+            async function handleCancelReservation(event) {
+                const reservationId = event.target.dataset.reservationId;
+                if (!confirm(`Bạn có chắc chắn muốn hủy đặt bàn #${reservationId} này không?`)) {
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`/api/reservations/${reservationId}`, {
+                        method: 'DELETE',
+                    });
+                    const result = await response.json();
+
+                    if (response.ok && result.success) {
+                        alert(result.message);
+                        fetchCustomerReservations(); // Reload the list to show updated status
+                        updateTableMapAndCounts(); // Update the table map status
+                    } else {
+                        alert(result.error || 'Có lỗi xảy ra khi hủy đặt bàn.');
+                    }
+                } catch (error) {
+                    console.error('Lỗi hủy đặt bàn:', error);
+                    alert('Lỗi kết nối máy chủ khi hủy đặt bàn.');
+                }
+            }
+
+            // Initial setup: Ensure only the first section is visible
+            tableStatusAndMap.style.display = 'none';
+            reservationForm.style.display = 'none';
         });
     </script>
 </body>
