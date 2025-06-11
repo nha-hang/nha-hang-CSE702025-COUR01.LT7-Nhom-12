@@ -13,8 +13,9 @@ Các mục lớn của trang web:
   1. [Trang chủ](https://nha-hang.github.io/nha-hang-CSE702025-N04-Nhom-18./)
   2. [Thực đơn](https://nha-hang.github.io/nha-hang-CSE702025-N04-Nhom-18./menu.html)
   3. [Đặt bàn](https://nha-hang.github.io/nha-hang-CSE702025-N04-Nhom-18./table.html)
-  4. [Giới thiệu](https://nha-hang.github.io/nha-hang-CSE702025-N04-Nhom-18./about.html)
-  5. [Liên hệ](https://nha-hang.github.io/nha-hang-CSE702025-N04-Nhom-18./contact.html)
+  4. [Blog](https://nha-hang.github.io/nha-hang-CSE702025-N04-Nhom-18./blog.html)
+  5. [Giới thiệu](https://nha-hang.github.io/nha-hang-CSE702025-N04-Nhom-18./about.html)
+  6. [Liên hệ](https://nha-hang.github.io/nha-hang-CSE702025-N04-Nhom-18./contact.html)
 
 ## Một số hình ảnh
   * Trang chủ
@@ -28,7 +29,9 @@ Các mục lớn của trang web:
   * Đặt bàn
   ![image](https://github.com/user-attachments/assets/2647cd90-3334-4ff3-b706-fc1aafdbd3d8)
 
-  
+  * Blog
+  ![image](https://github.com/user-attachments/assets/8e5a90dd-6098-40da-a21b-6ece2c706346)
+
   * Giới thiệu
   ![image](https://github.com/user-attachments/assets/a50de71c-4c05-4394-96d8-e59014803571)
 
