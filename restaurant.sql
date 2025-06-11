@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th6 05, 2025 lúc 05:07 PM
+-- Thời gian đã tạo: Th6 11, 2025 lúc 04:11 PM
 -- Phiên bản máy phục vụ: 10.4.32-MariaDB
 -- Phiên bản PHP: 8.2.12
 
@@ -90,7 +90,11 @@ INSERT INTO `reservations` (`id`, `customer_name`, `customer_phone`, `customer_e
 (1, 'nam', '0944082389', 'nam@gmail.com', 4, '2025-05-31', '17:30:00', 'http://localhost:3000', 'pending', 2147483647, 0),
 (2, 'nam', '0944082389', 'nam@gmail.com', 2, '2025-06-06', '09:00:00', '0000', 'pending', 2147483647, 0),
 (3, 'nam', '0944082389', 'nam@gmail.com', 4, '2025-06-06', '13:50:00', '000', 'pending', 2147483647, 0),
-(4, 'nam', '0944082389', 'nam@gmail.com', 2, '2025-06-27', '09:49:00', '0000', 'pending', 2147483647, 0);
+(4, 'nam', '0944082389', 'nam@gmail.com', 2, '2025-06-27', '09:49:00', '0000', 'pending', 2147483647, 0),
+(5, 'nam', '0944082389', 'nam@gmail.com', 2, '2025-06-26', '10:08:00', 'ssss', 'cancelled', 2147483647, 1),
+(6, 'nam', '0944082389', 'nam@gmail.com', 4, '2025-06-12', '00:35:00', '', 'cancelled', 2147483647, 13),
+(7, 'nam', '0944082389', 'nam@gmail.com', 4, '2025-06-15', '00:50:00', '', 'cancelled', 2147483647, 1),
+(8, 'nam', '0944082389', 'nam@gmail.com', 2, '2025-06-11', '01:50:00', '', 'cancelled', 2147483647, 2);
 
 -- --------------------------------------------------------
 
@@ -156,6 +160,20 @@ CREATE TABLE `users` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `user_reviews`
+--
+
+CREATE TABLE `user_reviews` (
+  `id` int(11) NOT NULL,
+  `reviewer_name` varchar(255) NOT NULL,
+  `rating` int(1) NOT NULL CHECK (`rating` >= 1 and `rating` <= 5),
+  `comment` text NOT NULL,
+  `review_date` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Chỉ mục cho các bảng đã đổ
 --
@@ -199,6 +217,12 @@ ALTER TABLE `users`
   ADD UNIQUE KEY `email` (`email`);
 
 --
+-- Chỉ mục cho bảng `user_reviews`
+--
+ALTER TABLE `user_reviews`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- AUTO_INCREMENT cho các bảng đã đổ
 --
 
@@ -218,7 +242,7 @@ ALTER TABLE `menu_items`
 -- AUTO_INCREMENT cho bảng `reservations`
 --
 ALTER TABLE `reservations`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT cho bảng `tables`
@@ -236,6 +260,12 @@ ALTER TABLE `teams`
 -- AUTO_INCREMENT cho bảng `users`
 --
 ALTER TABLE `users`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT cho bảng `user_reviews`
+--
+ALTER TABLE `user_reviews`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;
 
