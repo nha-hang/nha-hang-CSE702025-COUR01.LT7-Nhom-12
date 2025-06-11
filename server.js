@@ -239,3 +239,41 @@ app.listen(port, () => {
     console.log(`Máy chủ Node.js đang chạy tại http://localhost:${port}`);
     console.log(`Phục vụ các tệp tĩnh từ thư mục: ${__dirname}`);
 });
+// ... existing server.js code ...
+
+// API Endpoint để xử lý đánh giá từ khách hàng
+app.post('/api/reviews', async (req, res) => {
+    const { name, rating, comment } = req.body;
+
+    // Basic validation
+    if (!name || !rating || !comment) {
+        return res.status(400).json({ success: false, error: 'Vui lòng điền đầy đủ thông tin (Tên, Số sao, Bình luận).' });
+    }
+    if (rating < 1 || rating > 5) {
+        return res.status(400).json({ success: false, error: 'Số sao đánh giá phải từ 1 đến 5.' });
+    }
+
+    try {
+        const sql = "INSERT INTO user_reviews (reviewer_name, rating, comment) VALUES (?, ?, ?)";
+        const [result] = await pool.query(sql, [name, rating, comment]);
+
+        res.json({ success: true, message: 'Đánh giá của bạn đã được gửi thành công!', reviewId: result.insertId });
+    } catch (error) {
+        console.error('Lỗi khi lưu đánh giá của khách hàng:', error);
+        res.status(500).json({ success: false, error: 'Lỗi máy chủ khi lưu đánh giá.' });
+    }
+});
+
+// API Endpoint để lấy các đánh giá (nếu bạn muốn hiển thị các đánh giá đã lưu)
+app.get('/api/reviews', async (req, res) => {
+    try {
+        const sql = "SELECT reviewer_name, rating, comment, review_date FROM user_reviews ORDER BY review_date DESC";
+        const [rows] = await pool.query(sql);
+        res.json({ success: true, reviews: rows });
+    } catch (error) {
+        console.error('Lỗi khi lấy đánh giá của khách hàng:', error);
+        res.status(500).json({ success: false, error: 'Lỗi máy chủ khi lấy danh sách đánh giá.' });
+    }
+});
+
+// ... rest of your server.js code ...
