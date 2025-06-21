@@ -16,46 +16,44 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="nav">
-            <div class="container"><a class="navbar-brand logo" href="index.html">
+        <!--Navbar-->
+        <nav id="nav" class="navbar navbar-expand-lg navbar-light fixed-top">
+            <div class="container">
+                <a href="index.html" class="logo">
                     <i class="fas fa-utensils"></i>
                     Nata.
                 </a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav m-auto">
                         <li class="nav-item">
                             <a class="nav-link" href="index.html">Trang chủ</a>
                         </li>
                         <li class="nav-item">
-                        <a class="nav-link" href="about.html">Về chúng tôi</a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link" href="menu.html">Thực đơn</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link active" href="table.html">Đặt bàn</a>
+                            <a class="nav-link" href="table.html">Đặt bàn</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="blog.html">Blog</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="about.html">Giới thiệu</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="contact.html">Liên hệ</a>
                         </li>
                     </ul>
                     <div class="icons">
-                        <i class="fas fa-search" data-toggle="modal" data-target="#modelId"></i>
-                        <i class="fas fa-heart"></i>
-                        <a href="cart.html"><i class="fas fa-shopping-cart"></i></a>
+                        <div class="fas fa-search" id="user-login" title="Tìm kiếm" data-toggle="modal" data-target="#modelId"></div>
                     </div>
                 </div>
             </div>
         </nav>
     </header>
-
     <div class="modal fade modal-search" id="modelId" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
             <div class="modal-content modal-sch-main">
