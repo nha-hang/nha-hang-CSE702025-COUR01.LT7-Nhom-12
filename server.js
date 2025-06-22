@@ -451,6 +451,133 @@ app.post('/api/contact', async (req, res) => {
         res.status(500).json({ error: 'Lỗi máy chủ khi gửi tin nhắn liên hệ.' });
     }
 });
+// server.js
+
+// ... (các đoạn code đã có: import, dbConfig, pool, testDbConnection, app.use, các API khác) ...
+
+// API Endpoint để xử lý việc đặt bàn mới
+app.post('/api/reservations', async (req, res) => {
+    const { customer_name, customer_email, customer_phone, reservation_date, reservation_time, number_of_guests, table_id, notes } = req.body;
+
+    // 1. Kiểm tra dữ liệu đầu vào cơ bản
+    if (!customer_name || !customer_email || !customer_phone || !reservation_date || !reservation_time || !number_of_guests || !table_id) {
+        return res.status(400).json({ success: false, message: 'Vui lòng điền đầy đủ các thông tin bắt buộc (Tên, Email, SĐT, Ngày, Giờ, Số khách, Bàn).' });
+    }
+
+    // 2. Validate dữ liệu đầu vào (ví dụ: số điện thoại, email hợp lệ, số khách > 0)
+    if (isNaN(number_of_guests) || parseInt(number_of_guests) <= 0) {
+        return res.status(400).json({ success: false, message: 'Số lượng khách không hợp lệ.' });
+    }
+    // Có thể thêm regex kiểm tra email/phone nếu cần
+
+    // 3. Kiểm tra tính khả dụng của bàn (RẤT QUAN TRỌNG TRONG THỰC TẾ)
+    // Để đơn giản hóa, ở đây ta chỉ kiểm tra xem bàn có tồn tại không.
+    // Trong một ứng dụng thực tế, bạn cần kiểm tra xem bàn có bị đặt vào cùng thời gian đó không.
+    try {
+        const [tables] = await pool.query('SELECT * FROM tables WHERE id = ?', [table_id]);
+        if (tables.length === 0) {
+            return res.status(404).json({ success: false, message: 'Bàn bạn chọn không tồn tại.' });
+        }
+        // Thêm logic phức tạp hơn ở đây để kiểm tra trùng lặp lịch đặt
+        // Ví dụ: SELECT * FROM reservations WHERE table_id = ? AND reservation_date = ? AND reservation_time = ?
+        // Nếu có kết quả, trả về lỗi "Bàn đã có người đặt vào thời gian này".
+
+    } catch (error) {
+        console.error('Lỗi khi kiểm tra bàn:', error);
+        return res.status(500).json({ success: false, message: 'Lỗi máy chủ khi kiểm tra bàn.' });
+    }
+
+    // 4. Lưu thông tin đặt bàn vào cơ sở dữ liệu
+    try {
+        const sql = `
+            INSERT INTO reservations (customer_name, customer_email, customer_phone, reservation_date, reservation_time, number_of_guests, table_id, notes, status)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending')
+        `;
+        const [result] = await pool.query(sql, [
+            customer_name,
+            customer_email,
+            customer_phone,
+            reservation_date,
+            reservation_time,
+            parseInt(number_of_guests), // Đảm bảo là số nguyên
+            table_id,
+            notes || '', // Gán chuỗi rỗng nếu notes là null/undefined
+        ]);
+
+        // Cập nhật trạng thái bàn (nếu muốn)
+        // Ví dụ: Đặt trạng thái bàn là 'reserved' hoặc 'occupied' ngay sau khi đặt thành công
+        // await pool.query('UPDATE tables SET status = ? WHERE id = ?', ['reserved', table_id]);
+
+        res.status(201).json({ success: true, message: 'Đặt bàn thành công!', reservationId: result.insertId });
+    } catch (error) {
+        console.error('Lỗi khi lưu đặt bàn:', error);
+        res.status(500).json({ success: false, message: 'Lỗi máy chủ khi đặt bàn. Vui lòng thử lại sau.' });
+    }
+});
+
+
+// API Endpoint để lấy danh sách bàn và trạng thái của chúng
+app.get('/api/tables', async (req, res) => {
+    try {
+        const [rows] = await pool.query('SELECT id, name, capacity, status FROM tables');
+        res.json({ success: true, tables: rows });
+    } catch (error) {
+        console.error('Lỗi khi lấy danh sách bàn:', error);
+        res.status(500).json({ success: false, message: 'Lỗi máy chủ khi lấy danh sách bàn.' });
+    }
+});
+
+// API Endpoint để lấy các đặt bàn của khách hàng theo số điện thoại (cho chức năng tra cứu)
+app.get('/api/customer-reservations', async (req, res) => {
+    const { phone } = req.query; // Lấy số điện thoại từ query parameter
+
+    if (!phone) {
+        return res.status(400).json({ success: false, message: 'Vui lòng cung cấp số điện thoại để tra cứu.' });
+    }
+
+    try {
+        // Lấy thông tin đặt bàn dựa trên số điện thoại và sắp xếp theo ngày giờ
+        const sql = `
+            SELECT r.*, t.name AS table_name
+            FROM reservations r
+            JOIN tables t ON r.table_id = t.id
+            WHERE r.customer_phone = ?
+            ORDER BY r.reservation_date DESC, r.reservation_time DESC
+        `;
+        const [rows] = await pool.query(sql, [phone]);
+        res.json({ success: true, reservations: rows });
+    } catch (error) {
+        console.error('Lỗi khi tra cứu đặt bàn của khách hàng:', error);
+        res.status(500).json({ success: false, message: 'Lỗi máy chủ khi tra cứu đặt bàn.' });
+    }
+});
+
+// API Endpoint để hủy đặt bàn (DELETE request)
+app.delete('/api/reservations/:id', async (req, res) => {
+    const reservationId = req.params.id; // Lấy ID đặt bàn từ URL
+
+    try {
+        // Cập nhật trạng thái đặt bàn thành 'cancelled' (hoặc xóa hẳn nếu muốn)
+        const [result] = await pool.query('UPDATE reservations SET status = ? WHERE id = ?', ['cancelled', reservationId]);
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ success: false, message: 'Không tìm thấy đặt bàn để hủy.' });
+        }
+
+        // Nếu bạn muốn giải phóng bàn ngay lập tức sau khi hủy
+        // Lấy table_id từ đặt bàn bị hủy
+        const [reservation] = await pool.query('SELECT table_id FROM reservations WHERE id = ?', [reservationId]);
+        if (reservation.length > 0) {
+            const tableId = reservation[0].table_id;
+            await pool.query('UPDATE tables SET status = ? WHERE id = ?', ['available', tableId]);
+        }
+
+        res.json({ success: true, message: `Đặt bàn #${reservationId} đã được hủy thành công.` });
+    } catch (error) {
+        console.error('Lỗi khi hủy đặt bàn:', error);
+        res.status(500).json({ success: false, message: 'Lỗi máy chủ khi hủy đặt bàn.' });
+    }
+});
 
 app.listen(port, () => {
     console.log(`Máy chủ Node.js đang chạy tại http://localhost:${port}`);
