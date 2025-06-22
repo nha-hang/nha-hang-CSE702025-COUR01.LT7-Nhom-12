@@ -2,6 +2,8 @@
 const mysql = require('mysql2/promise');
 const express = require('express');
 const path = require('path');
+const bcrypt = require('bcryptjs'); 
+const jwt = require('jsonwebtoken');
 
 const dbConfig = {
     host: 'localhost',
@@ -14,6 +16,7 @@ const dbConfig = {
 };
 
 const pool = mysql.createPool(dbConfig);
+const SECRET_KEY = 'your_super_secret_key_for_jwt_signing_1234567890abcdef';
 
 async function testDbConnection() {
     try {
@@ -34,6 +37,100 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static(__dirname));
+// Middleware để xác thực JWT từ header Authorization
+const authenticateToken = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1]; // Định dạng: "Bearer TOKEN"
+
+    if (token == null) {
+        return res.status(401).json({ message: 'Không có token xác thực.' });
+    }
+
+    jwt.verify(token, SECRET_KEY, (err, user) => {
+        if (err) {
+            // console.error("JWT Verification Error:", err); // Để debug
+            return res.status(403).json({ message: 'Token không hợp lệ hoặc hết hạn.' });
+        }
+        req.user = user; // Gán thông tin người dùng đã giải mã vào request
+        next();
+    });
+};
+
+// Middleware để kiểm tra vai trò người dùng
+const authorizeRoles = (roles) => {
+    return (req, res, next) => {
+        // Đảm bảo req.user tồn tại và vai trò của người dùng nằm trong danh sách các vai trò được phép
+        if (!req.user || !roles.includes(req.user.role)) {
+            return res.status(403).json({ message: 'Bạn không có quyền truy cập vào tài nguyên này.' });
+        }
+        next();
+    };
+};
+app.post('/api/auth/register', async (req, res) => {
+    const { username, password, email, role = 'customer' } = req.body; // Mặc định là 'customer'
+
+    if (!username || !password || !email) {
+        return res.status(400).json({ success: false, message: 'Vui lòng cung cấp đầy đủ tên đăng nhập, mật khẩu và email.' });
+    }
+
+    try {
+        const hashedPassword = await bcrypt.hash(password, 10); // Hash mật khẩu với salt 10
+
+        const [result] = await pool.query(
+            'INSERT INTO users (username, password, email, role) VALUES (?, ?, ?, ?)',
+            [username, hashedPassword, email, role]
+        );
+        res.status(201).json({ success: true, message: 'Đăng ký tài khoản thành công!', userId: result.insertId });
+    } catch (error) {
+        console.error('Lỗi khi đăng ký người dùng:', error);
+        if (error.code === 'ER_DUP_ENTRY') { // Lỗi nếu username/email đã tồn tại
+            return res.status(409).json({ success: false, message: 'Tên đăng nhập hoặc Email đã tồn tại.' });
+        }
+        res.status(500).json({ success: false, message: 'Lỗi máy chủ khi đăng ký.' });
+    }
+});
+
+// API Đăng nhập
+app.post('/api/auth/login', async (req, res) => {
+    const { username, password } = req.body;
+
+    if (!username || !password) {
+        return res.status(400).json({ success: false, message: 'Vui lòng nhập tên đăng nhập và mật khẩu.' });
+    }
+
+    try {
+        const [rows] = await pool.query('SELECT id, username, password, role FROM users WHERE username = ?', [username]);
+        const user = rows[0];
+
+        if (!user) {
+            return res.status(400).json({ success: false, message: 'Tên đăng nhập không tồn tại.' });
+        }
+
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        if (!isPasswordValid) {
+            return res.status(400).json({ success: false, message: 'Mật khẩu không đúng.' });
+        }
+
+        // Tạo JWT
+        const token = jwt.sign(
+            { id: user.id, username: user.username, role: user.role },
+            SECRET_KEY,
+            { expiresIn: '1h' } // Token sẽ hết hạn sau 1 giờ
+        );
+
+        res.json({ success: true, message: 'Đăng nhập thành công!', token: token, user: { id: user.id, username: user.username, role: user.role } });
+
+    } catch (error) {
+        console.error('Lỗi đăng nhập:', error);
+        res.status(500).json({ success: false, message: 'Lỗi máy chủ.' });
+    }
+});
+
+// API Lấy thông tin người dùng hiện tại (để kiểm tra xem đã đăng nhập chưa)
+app.get('/api/auth/me', authenticateToken, (req, res) => {
+    res.json({ success: true, user: req.user });
+});
+
 
 // API Endpoint để lấy danh sách các món ăn từ bảng menu_items
 app.get('/api/menu-items', async (req, res) => {
@@ -55,7 +152,54 @@ app.get('/api/menu-items', async (req, res) => {
         res.status(500).json({ error: 'Lỗi máy chủ khi lấy thực đơn' });
     }
 });
+// API Thêm món ăn mới (chỉ admin)
+app.post('/api/admin/menu-items', authenticateToken, authorizeRoles(['admin']), async (req, res) => {
+    const { name, description, price, image_url, category } = req.body;
+    if (!name || !price || !category) {
+        return res.status(400).json({ success: false, message: 'Vui lòng cung cấp tên, giá và danh mục món ăn.' });
+    }
+    try {
+        const [result] = await pool.query('INSERT INTO menu_items (name, description, price, image_url, category) VALUES (?, ?, ?, ?, ?)', [name, description, price, image_url, category]);
+        res.status(201).json({ success: true, message: 'Thêm món ăn thành công!', itemId: result.insertId });
+    } catch (error) {
+        console.error('Lỗi khi thêm món ăn:', error);
+        res.status(500).json({ success: false, message: 'Lỗi máy chủ.' });
+    }
+});
 
+// API Cập nhật món ăn (chỉ admin)
+app.put('/api/admin/menu-items/:id', authenticateToken, authorizeRoles(['admin']), async (req, res) => {
+    const itemId = req.params.id;
+    const { name, description, price, image_url, category } = req.body;
+    if (!name || !price || !category) {
+        return res.status(400).json({ success: false, message: 'Vui lòng cung cấp tên, giá và danh mục món ăn.' });
+    }
+    try {
+        const [result] = await pool.query('UPDATE menu_items SET name = ?, description = ?, price = ?, image_url = ?, category = ? WHERE id = ?', [name, description, price, image_url, category, itemId]);
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ success: false, message: 'Không tìm thấy món ăn.' });
+        }
+        res.json({ success: true, message: 'Cập nhật món ăn thành công.' });
+    } catch (error) {
+        console.error('Lỗi khi cập nhật món ăn:', error);
+        res.status(500).json({ success: false, message: 'Lỗi máy chủ.' });
+    }
+});
+
+// API Xóa món ăn (chỉ admin)
+app.delete('/api/admin/menu-items/:id', authenticateToken, authorizeRoles(['admin']), async (req, res) => {
+    const itemId = req.params.id;
+    try {
+        const [result] = await pool.query('DELETE FROM menu_items WHERE id = ?', [itemId]);
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ success: false, message: 'Không tìm thấy món ăn.' });
+        }
+        res.json({ success: true, message: 'Xóa món ăn thành công.' });
+    } catch (error) {
+        console.error('Lỗi khi xóa món ăn:', error);
+        res.status(500).json({ success: false, message: 'Lỗi máy chủ.' });
+    }
+});
 // Endpoint để lấy trạng thái tất cả các bàn
 app.get('/api/tables', async (req, res) => {
     try {
@@ -66,7 +210,25 @@ app.get('/api/tables', async (req, res) => {
         res.status(500).json({ error: 'Lỗi khi truy vấn danh sách bàn' });
     }
 });
+app.put('/api/admin/tables/:id/status', authenticateToken, authorizeRoles(['admin']), async (req, res) => {
+    const tableId = req.params.id;
+    const { status } = req.body; // status có thể là 'available', 'reserved', 'occupied', 'maintenance'
 
+    if (!status) {
+        return res.status(400).json({ success: false, message: 'Vui lòng cung cấp trạng thái bàn.' });
+    }
+
+    try {
+        const [result] = await pool.query('UPDATE tables SET status = ? WHERE id = ?', [status, tableId]);
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ success: false, message: 'Không tìm thấy bàn.' });
+        }
+        res.json({ success: true, message: 'Cập nhật trạng thái bàn thành công.' });
+    } catch (error) {
+        console.error('Lỗi khi cập nhật trạng thái bàn:', error);
+        res.status(500).json({ success: false, message: 'Lỗi máy chủ.' });
+    }
+});
 // Endpoint để xử lý đặt bàn (bao gồm cập nhật trạng thái bàn)
 app.post('/api/reservations', async (req, res) => {
     const { customer_name, customer_phone, customer_email, number_of_guests, reservation_date, reservation_time, notes, table_id } = req.body;
@@ -171,7 +333,62 @@ app.delete('/api/reservations/:id', async (req, res) => {
         }
     }
 });
+// API Lấy tất cả đặt chỗ (chỉ admin)
+app.get('/api/admin/reservations', authenticateToken, authorizeRoles(['admin']), async (req, res) => {
+    try {
+        // Có thể JOIN với bảng users và tables để lấy thêm thông tin
+        const sql = `
+            SELECT 
+                r.id, r.customer_name, r.customer_phone, r.customer_email, r.number_of_guests, 
+                r.reservation_date, r.reservation_time, r.status, r.notes, 
+                t.name as table_name, t.capacity as table_capacity
+            FROM reservations r
+            JOIN tables t ON r.table_id = t.id
+            ORDER BY r.reservation_date DESC, r.reservation_time DESC`;
+        const [rows] = await pool.query(sql);
+        res.json({ success: true, reservations: rows });
+    } catch (error) {
+        console.error('Lỗi khi lấy danh sách đặt chỗ:', error);
+        res.status(500).json({ success: false, message: 'Lỗi máy chủ.' });
+    }
+});
 
+// API Cập nhật trạng thái đặt chỗ (chỉ admin)
+app.put('/api/admin/reservations/:id/status', authenticateToken, authorizeRoles(['admin']), async (req, res) => {
+    const reservationId = req.params.id;
+    const { status } = req.body; // Ví dụ: 'confirmed', 'cancelled', 'pending'
+
+    if (!status) {
+        return res.status(400).json({ success: false, message: 'Vui lòng cung cấp trạng thái đặt chỗ.' });
+    }
+
+    try {
+        const [result] = await pool.query('UPDATE reservations SET status = ? WHERE id = ?', [status, reservationId]);
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ success: false, message: 'Không tìm thấy đặt chỗ.' });
+        }
+        res.json({ success: true, message: 'Cập nhật trạng thái đặt chỗ thành công.' });
+    } catch (error) {
+        console.error('Lỗi khi cập nhật trạng thái đặt chỗ:', error);
+        res.status(500).json({ success: false, message: 'Lỗi máy chủ.' });
+    }
+});
+
+// API lấy đặt chỗ của riêng người dùng (cho script.js của khách hàng)
+// Yêu cầu người dùng phải đăng nhập (có token)
+app.get('/api/my-reservations', authenticateToken, async (req, res) => {
+    // Giả định bảng `reservations` có cột `user_id` để liên kết với `users`
+    // Nếu không, bạn cần thêm cột này vào `reservations` trong restaurant.sql
+    // và khi tạo đặt chỗ, lưu `user_id` của người đặt.
+    try {
+        const userId = req.user.id; // Lấy ID người dùng từ JWT đã xác thực
+        const [rows] = await pool.query('SELECT * FROM reservations WHERE customer_email = ? ORDER BY reservation_date DESC, reservation_time DESC', [req.user.email]); // Hoặc dùng customer_id nếu có
+        res.json({ success: true, reservations: rows });
+    } catch (error) {
+        console.error('Lỗi khi lấy đặt chỗ của khách hàng:', error);
+        res.status(500).json({ success: false, message: 'Lỗi máy chủ.' });
+    }
+});
 // NEW: Endpoint để lấy danh sách đặt bàn của khách hàng (ví dụ dựa trên số điện thoại hoặc email)
 app.get('/api/customer-reservations', async (req, res) => {
     const { phone, email } = req.query; // Lấy thông tin từ query parameters
@@ -275,5 +492,56 @@ app.get('/api/reviews', async (req, res) => {
         res.status(500).json({ success: false, error: 'Lỗi máy chủ khi lấy danh sách đánh giá.' });
     }
 });
+// API Lấy tất cả người dùng (chỉ admin)
+app.get('/api/admin/users', authenticateToken, authorizeRoles(['admin']), async (req, res) => {
+    try {
+        const [rows] = await pool.query('SELECT id, username, email, role FROM users');
+        res.json({ success: true, users: rows });
+    } catch (error) {
+        console.error('Lỗi khi lấy danh sách người dùng:', error);
+        res.status(500).json({ success: false, message: 'Lỗi máy chủ.' });
+    }
+});
 
+// API Cập nhật vai trò người dùng (chỉ admin)
+app.put('/api/admin/users/:id/role', authenticateToken, authorizeRoles(['admin']), async (req, res) => {
+    const userId = req.params.id;
+    const { role } = req.body;
+
+    if (!role) {
+        return res.status(400).json({ success: false, message: 'Vui lòng cung cấp vai trò mới.' });
+    }
+
+    try {
+        const [result] = await pool.query('UPDATE users SET role = ? WHERE id = ?', [role, userId]);
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ success: false, message: 'Không tìm thấy người dùng.' });
+        }
+        res.json({ success: true, message: 'Cập nhật vai trò người dùng thành công.' });
+    } catch (error) {
+        console.error('Lỗi khi cập nhật vai trò người dùng:', error);
+        res.status(500).json({ success: false, message: 'Lỗi máy chủ.' });
+    }
+});
+
+// API Xóa người dùng (chỉ admin)
+app.delete('/api/admin/users/:id', authenticateToken, authorizeRoles(['admin']), async (req, res) => {
+    const userId = req.params.id;
+
+    // Không cho phép admin tự xóa chính mình hoặc xóa admin khác nếu không có siêu quyền
+    if (req.user.id == userId && req.user.role === 'admin') {
+        return res.status(403).json({ success: false, message: 'Admin không thể tự xóa tài khoản của mình.' });
+    }
+
+    try {
+        const [result] = await pool.query('DELETE FROM users WHERE id = ?', [userId]);
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ success: false, message: 'Không tìm thấy người dùng.' });
+        }
+        res.json({ success: true, message: 'Xóa người dùng thành công.' });
+    } catch (error) {
+        console.error('Lỗi khi xóa người dùng:', error);
+        res.status(500).json({ success: false, message: 'Lỗi máy chủ.' });
+    }
+});
 // ... rest of your server.js code ...
