@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+        }
+        .sidebar {
+            height: 100vh;
+            width: 250px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #343a40;
+            padding-top: 20px;
+            color: white;
+        }
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #fff;
+        }
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+        .sidebar ul li a {
+            display: block;
+            padding: 10px 20px;
+            color: white;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+        .sidebar ul li a:hover {
+            background-color: #495057;
+            text-decoration: none;
+            color: white;
+        }
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+        .card {
+            margin-bottom: 20px;
+        }
+        .logout-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .logout-btn:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Admin Panel</h2>
+        <ul>
+            <li><a href="/admin/dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+            <li><a href="/admin/reservations.html"><i class="fas fa-book"></i> Quản lý Đặt chỗ</a></li>
+            <li><a href="/admin/tables.html"><i class="fas fa-chair"></i> Quản lý Bàn</a></li>
+            <li><a href="/admin/menu.html"><i class="fas fa-utensils"></i> Quản lý Thực đơn</a></li>
+            <li><a href="/admin/users.html"><i class="fas fa-users"></i> Quản lý Người dùng</a></li>
+            <li><a href="/admin/contact-messages.html"><i class="fas fa-envelope"></i> Tin nhắn liên hệ</a></li>
+            <li><a href="/admin/reviews.html"><i class="fas fa-star"></i> Quản lý Đánh giá</a></li>
+        </ul>
+        <button class="logout-btn" id="logoutBtn">Đăng xuất</button>
+    </div>
+
+    <div class="main-content">
+        <h1>Chào mừng, <span id="adminUsername">Admin</span>!</h1>
+        <p>Đây là khu vực quản trị. Bạn có thể quản lý các khía cạnh khác nhau của nhà hàng tại đây.</p>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card bg-primary text-white">
+                    <div class="card-body">
+                        <h5 class="card-title">Tổng số Đặt chỗ</h5>
+                        <p class="card-text display-4" id="totalReservations">...</p>
+                        <a href="/admin/reservations.html" class="text-white">Xem chi tiết <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-success text-white">
+                    <div class="card-body">
+                        <h5 class="card-title">Bàn trống hôm nay</h5>
+                        <p class="card-text display-4" id="availableTables">...</p>
+                        <a href="/admin/tables.html" class="text-white">Xem chi tiết <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-info text-white">
+                    <div class="card-body">
+                        <h5 class="card-title">Tin nhắn mới</h5>
+                        <p class="card-text display-4" id="newMessages">...</p>
+                        <a href="/admin/contact-messages.html" class="text-white">Xem chi tiết <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const adminToken = localStorage.getItem('adminToken');
+            const adminRole = localStorage.getItem('adminRole');
+            const adminUsernameSpan = document.getElementById('adminUsername');
+
+            // Kiểm tra token và quyền
+            if (!adminToken || adminRole !== 'admin') {
+                window.location.href = '/admin/login.html'; // Chuyển hướng nếu không có quyền
+                return;
+            }
+
+            adminUsernameSpan.textContent = localStorage.getItem('adminUsername') || 'Admin';
+
+            // Hàm fetch dữ liệu với token
+            async function fetchData(url) {
+                const response = await fetch(url, {
+                    headers: {
+                        'Authorization': `Bearer ${adminToken}`
+                    }
+                });
+                if (!response.ok) {
+                    if (response.status === 401 || response.status === 403) {
+                        alert('Phiên đăng nhập đã hết hạn hoặc bạn không có quyền. Vui lòng đăng nhập lại.');
+                        localStorage.clear();
+                        window.location.href = '/admin/login.html';
+                        return null;
+                    }
+                    throw new Error(`Lỗi khi tải dữ liệu từ ${url}: ${response.statusText}`);
+                }
+                return response.json();
+            }
+
+            // Tải số liệu thống kê (ví dụ)
+            try {
+                // Ví dụ: Lấy tổng số đặt chỗ (bạn cần triển khai API này ở backend)
+                // app.get('/api/admin/reservations/count', authenticateToken, authorizeRoles(['admin']), ...)
+                // const totalResData = await fetchData('/api/admin/reservations/count');
+                // if (totalResData) {
+                //     document.getElementById('totalReservations').textContent = totalResData.count;
+                // } else {
+                //     document.getElementById('totalReservations').textContent = 'N/A';
+                // }
+                document.getElementById('totalReservations').textContent = '123'; // Demo
+                document.getElementById('availableTables').textContent = '8'; // Demo
+                document.getElementById('newMessages').textContent = '5'; // Demo
+
+            } catch (error) {
+                console.error('Lỗi khi tải số liệu thống kê:', error);
+                // Xử lý lỗi hiển thị
+            }
+
+            // Xử lý đăng xuất
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                localStorage.clear(); // Xóa token và các thông tin admin
+                window.location.href = '/admin/login.html'; // Chuyển hướng về trang đăng nhập
+            });
+        });
+    </script>
+</body>
+</html>

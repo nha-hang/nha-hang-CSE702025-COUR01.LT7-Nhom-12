@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Thực đơn - Admin</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" />
+    <link rel="stylesheet" href="/admin/admin-style.css"> </head>
+<body>
+    <div class="sidebar">
+        <h2>Admin Panel</h2>
+        <ul>
+            <li><a href="/admin/dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+            <li><a href="/admin/reservations.html"><i class="fas fa-book"></i> Quản lý Đặt chỗ</a></li>
+            <li><a href="/admin/tables.html"><i class="fas fa-chair"></i> Quản lý Bàn</a></li>
+            <li><a href="/admin/menu.html"><i class="fas fa-utensils"></i> Quản lý Thực đơn</a></li>
+            <li><a href="/admin/users.html"><i class="fas fa-users"></i> Quản lý Người dùng</a></li>
+            <li><a href="/admin/contact-messages.html"><i class="fas fa-envelope"></i> Tin nhắn liên hệ</a></li>
+            <li><a href="/admin/reviews.html"><i class="fas fa-star"></i> Quản lý Đánh giá</a></li>
+        </ul>
+        <button class="logout-btn" id="logoutBtn">Đăng xuất</button>
+    </div>
+
+    <div class="main-content">
+        <h1>Quản lý Thực đơn</h1>
+        <div class="card mb-4">
+            <div class="card-header">Thêm món ăn mới</div>
+            <div class="card-body">
+                <form id="addMenuItemForm">
+                    <div class="form-group">
+                        <label for="itemName">Tên món ăn</label>
+                        <input type="text" class="form-control" id="itemName" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="itemDescription">Mô tả</label>
+                        <textarea class="form-control" id="itemDescription" name="description"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="itemPrice">Giá</label>
+                        <input type="number" step="0.01" class="form-control" id="itemPrice" name="price" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="itemImage">URL hình ảnh</label>
+                        <input type="text" class="form-control" id="itemImage" name="image_url">
+                    </div>
+                    <div class="form-group">
+                        <label for="itemCategory">Danh mục</label>
+                        <input type="text" class="form-control" id="itemCategory" name="category" required>
+                    </div>
+                    <button type="submit" class="btn btn-success">Thêm món ăn</button>
+                </form>
+                <div id="addMenuItemMessage" class="mt-3"></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">Danh sách món ăn</div>
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Tên</th>
+                            <th>Giá</th>
+                            <th>Danh mục</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody id="menuItemsTableBody">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const adminToken = localStorage.getItem('adminToken');
+            const adminRole = localStorage.getItem('adminRole');
+
+            if (!adminToken || adminRole !== 'admin') {
+                window.location.href = '/admin/login.html';
+                return;
+            }
+
+            async function fetchData(url, options = {}) {
+                options.headers = {
+                    ...options.headers,
+                    'Authorization': `Bearer ${adminToken}`
+                };
+                const response = await fetch(url, options);
+                if (!response.ok) {
+                    if (response.status === 401 || response.status === 403) {
+                        alert('Phiên đăng nhập đã hết hạn hoặc bạn không có quyền. Vui lòng đăng nhập lại.');
+                        localStorage.clear();
+                        window.location.href = '/admin/login.html';
+                        return null;
+                    }
+                    throw new Error(`Lỗi khi tải dữ liệu từ ${url}: ${response.statusText}`);
+                }
+                return response.json();
+            }
+
+            // Chức năng tải và hiển thị danh sách món ăn
+            async function loadMenuItems() {
+                const tableBody = document.getElementById('menuItemsTableBody');
+                tableBody.innerHTML = '<tr><td colspan="5">Đang tải...</td></tr>';
+                try {
+                    const data = await fetchData('/api/menu-items'); // API này không cần bảo vệ nếu bạn muốn public menu
+                    // Tuy nhiên, nếu bạn dùng /api/admin/menu-items để lấy tất cả, thì cần token
+                    if (data && data.success) {
+                        tableBody.innerHTML = '';
+                        data.menuItems.forEach(item => {
+                            const row = `
+                                <tr>
+                                    <td><span class="math-inline">\{item\.id\}</td\>
+                                        <td>{item.name}</td>
+<td>item.price</td><td>{item.category}</td>
+<td>
+<button class="btn btn-sm btn-info edit-item-btn" data-id="item.id">Sửa</button><buttonclass="btnbtn−smbtn−dangerdelete−item−btn"data−id="{item.id}">Xóa</button>
+</td>
+</tr>
+`;
+tableBody.insertAdjacentHTML('beforeend', row);
+});
+attachEventListeners();
+}
+} catch (error) {
+console.error('Lỗi tải món ăn:', error);
+tableBody.innerHTML = '<tr><td colspan="5" class="text-danger">Không thể tải danh sách món ăn.</td></tr>';
+}
+}
+ // Chức năng thêm món ăn
+            document.getElementById('addMenuItemForm').addEventListener('submit', async function(event) {
+                event.preventDefault();
+                const formData = new FormData(this);
+                const itemData = Object.fromEntries(formData.entries());
+                const messageDiv = document.getElementById('addMenuItemMessage');
+
+                try {
+                    const response = await fetchData('/api/admin/menu-items', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(itemData)
+                    });
+                    if (response && response.success) {
+                        messageDiv.className = 'alert alert-success';
+                        messageDiv.textContent = response.message;
+                        this.reset();
+                        loadMenuItems(); // Tải lại danh sách
+                    } else {
+                        messageDiv.className = 'alert alert-danger';
+                        messageDiv.textContent = response.message || 'Lỗi khi thêm món ăn.';
+                    }
+                } catch (error) {
+                    console.error('Lỗi thêm món ăn:', error);
+                    messageDiv.className = 'alert alert-danger';
+                    messageDiv.textContent = 'Lỗi kết nối máy chủ.';
+                }
+            });
+
+            // Chức năng xóa món ăn
+            async function deleteMenuItem(itemId) {
+                if (!confirm('Bạn có chắc chắn muốn xóa món ăn này không?')) return;
+                try {
+                    const response = await fetchData(`/api/admin/menu-items/${itemId}`, {
+                        method: 'DELETE'
+                    });
+                    if (response && response.success) {
+                        alert(response.message);
+                        loadMenuItems();
+                    } else {
+                        alert(response.message || 'Lỗi khi xóa món ăn.');
+                    }
+                } catch (error) {
+                    console.error('Lỗi xóa món ăn:', error);
+                    alert('Lỗi kết nối máy chủ khi xóa.');
+                }
+            }
+
+            // Gán event listeners cho các nút Sửa/Xóa
+            function attachEventListeners() {
+                document.querySelectorAll('.delete-item-btn').forEach(button => {
+                    button.onclick = () => deleteMenuItem(button.dataset.id);
+                });
+                // Logic cho nút Sửa sẽ phức tạp hơn (mở modal, điền dữ liệu, gửi PUT request)
+                document.querySelectorAll('.edit-item-btn').forEach(button => {
+                    button.onclick = () => alert('Chức năng sửa đang được phát triển cho ID: ' + button.dataset.id);
+                    // Thực hiện logic sửa ở đây, ví dụ: showEditModal(button.dataset.id);
+                });
+            }
+
+            // Gọi hàm tải món ăn khi trang tải
+            loadMenuItems();
+
+            // Xử lý đăng xuất (giống dashboard)
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                localStorage.clear();
+                window.location.href = '/admin/login.html';
+            });
+        });
+    </script>
+</body>
+</html>  

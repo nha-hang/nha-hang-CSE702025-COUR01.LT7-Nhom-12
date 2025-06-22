@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .login-container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 350px;
+            text-align: center;
+        }
+        .login-container h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .login-container .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        .login-container label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        .login-container input[type="text"],
+        .login-container input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .login-container button {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+        .login-container button:hover {
+            background-color: #218838;
+        }
+        .message {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>Đăng nhập Admin</h2>
+        <form id="adminLoginForm">
+            <div class="form-group">
+                <label for="username">Tên đăng nhập:</label>
+                <input type="text" class="form-control" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Mật khẩu:</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Đăng nhập</button>
+            <div id="loginMessage" class="message"></div>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('adminLoginForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const loginMessageDiv = document.getElementById('loginMessage');
+
+            loginMessageDiv.textContent = 'Đang đăng nhập...';
+            loginMessageDiv.className = 'message';
+
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    if (result.user.role === 'admin') {
+                        localStorage.setItem('adminToken', result.token); // Lưu token
+                        localStorage.setItem('adminUsername', result.user.username); // Lưu username (tùy chọn)
+                        localStorage.setItem('adminRole', result.user.role); // Lưu role (tùy chọn)
+                        loginMessageDiv.textContent = 'Đăng nhập thành công! Đang chuyển hướng...';
+                        loginMessageDiv.classList.add('success');
+                        window.location.href = '/admin/dashboard.html'; // Chuyển hướng đến trang dashboard admin
+                    } else {
+                        loginMessageDiv.textContent = 'Bạn không có quyền truy cập admin.';
+                        loginMessageDiv.classList.add('error');
+                    }
+                } else {
+                    loginMessageDiv.textContent = result.message || 'Tên đăng nhập hoặc mật khẩu không đúng.';
+                    loginMessageDiv.classList.add('error');
+                }
+            } catch (error) {
+                console.error('Lỗi khi đăng nhập:', error);
+                loginMessageDiv.textContent = 'Lỗi kết nối máy chủ. Vui lòng thử lại sau.';
+                loginMessageDiv.classList.add('error');
+            }
+        });
+    </script>
+</body>
+</html>
