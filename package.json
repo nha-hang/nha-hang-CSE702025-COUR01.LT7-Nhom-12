@@ -2,7 +2,7 @@
   "name": "web-nata",
   "version": "1.0.0",
   "description": "Project website Nata",
-  "main": "server.js", 
+  "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -12,6 +12,8 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.19.2",
-    "mysql2": "^3.9.7"
+    "mysql2": "^3.9.7",
+    "bcryptjs": "^2.4.3",  
+    "jsonwebtoken": "^9.0.2",
   }
 }
