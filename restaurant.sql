@@ -154,11 +154,23 @@ CREATE TABLE `users` (
   `id` int(11) NOT NULL,
   `username` varchar(50) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `email` varchar(100) NOT NULL,
-  `full_name` varchar(255) NOT NULL,
-  `phone_number` varchar(20) NOT NULL,
+  `email` varchar(100) DEFAULT NULL,
+  `role` varchar(20) DEFAULT 'user', -- Thêm cột role với giá trị mặc định là 'user'
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `username` (`username`),
+  ADD UNIQUE KEY `email` (`email`);
+
+ALTER TABLE `users`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+INSERT INTO `users` (`username`, `password`, `email`, `role`) VALUES
+('admin', 'hashed_password_here', 'admin@example.com', 'admin');
+UPDATE users
+SET role = 'admin'
+WHERE username = 'admin';
 
 -- --------------------------------------------------------
 
