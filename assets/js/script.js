@@ -303,4 +303,81 @@ $(document).ready(function() {
     // Ban đầu, không cần gọi updateTableMapAndCounts() hay attachTableClickHandlers()
     // vì sơ đồ bàn đã bị ẩn. Chúng sẽ được gọi khi người dùng nhấn nút "Bắt đầu đặt bàn ngay!".
 
-}); // End of $(document).ready function
+});
+// Hàm để tải trạng thái bàn từ backend
+async function fetchTableStatus() {
+    try {
+        const response = await fetch('/api/tables'); // Gọi API GET /api/tables
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        if (data.success) {
+            // Cập nhật mảng restaurantTables cục bộ dựa trên dữ liệu từ backend
+            // Đảm bảo cấu trúc dữ liệu từ backend khớp với expectedTableState (id, name, status, capacity)
+            restaurantTables = data.tables; // Cập nhật biến toàn cục hoặc biến trong scope
+
+            updateTableMapAndCounts(); // Cập nhật UI sơ đồ bàn
+            attachTableClickHandlers(); // Gán lại các event listener nếu cần
+        } else {
+            console.error('Failed to fetch table status:', data.message);
+        }
+    } catch (error) {
+        console.error('Error fetching table status:', error);
+        // Hiển thị thông báo lỗi cho người dùng nếu cần
+    }
+}
+
+// ... (Trong phần xử lý 'click' của nút "Bắt đầu đặt bàn ngay!" của bạn)
+// Thay vì chỉ hiển thị, hãy gọi hàm fetchTableStatus()
+document.getElementById('start-reservation-btn').addEventListener('click', () => {
+    initialReservationSection.style.display = 'none';
+    tableStatusAndMap.style.display = 'block';
+    fetchTableStatus(); // <--- GỌI HÀM NÀY ĐỂ TẢI DỮ LIỆU BÀN MỚI NHẤT
+    tableStatusAndMap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+
+
+// ... (trong handleReservationFormSubmit)
+// Sau khi đặt bàn thành công, gọi lại fetchTableStatus để cập nhật trạng thái bàn trên UI
+// Dòng này đã có trong script.js của bạn: updateTableMapAndCounts();
+// Có thể bạn muốn thay bằng fetchTableStatus() để luôn lấy dữ liệu mới nhất từ server
+if (response.ok && result.success) {
+    // ...
+    // updateTableMapAndCounts(); // Có thể thay bằng fetchTableStatus();
+    fetchTableStatus(); // <-- Đảm bảo cập nhật trạng thái bàn mới nhất sau khi đặt
+    // ...
+}
+
+// ... (trong handleCancelReservation)
+// Tương tự, sau khi hủy đặt bàn thành công, gọi lại fetchTableStatus
+// Dòng này đã có trong script.js của bạn: updateTableMapAndCounts();
+// Có thể bạn muốn thay bằng fetchTableStatus() để luôn lấy dữ liệu mới nhất từ server
+if (response.ok && result.success) {
+    // ...
+    // updateTableMapAndCounts(); // Có thể thay bằng fetchTableStatus();
+    fetchCustomerReservations(); // Tải lại danh sách đặt chỗ của khách
+    fetchTableStatus(); // <-- Cập nhật trạng thái bàn sau khi hủy
+    // ...
+}
+
+// ... (API /api/my-reservations trong script.js)
+// Khi fetchCustomerReservations được gọi, bạn cần gửi token của người dùng (nếu có đăng nhập cho khách hàng)
+async function fetchCustomerReservations() {
+    const userId = localStorage.getItem('userId'); // Hoặc lấy từ token
+    const userToken = localStorage.getItem('userToken'); // Nếu bạn có hệ thống đăng nhập cho khách hàng
+    
+    // Nếu bạn muốn API /api/my-reservations được bảo vệ, bạn cần gửi token
+    const headers = {};
+    if (userToken) {
+        headers['Authorization'] = `Bearer ${userToken}`;
+    }
+
+    try {
+        const response = await fetch('/api/my-reservations', { headers: headers }); // <-- Thêm headers
+        // ... (phần còn lại của hàm này)
+    } catch (error) {
+        // ...
+    }
+}
+// End of $(document).ready function
