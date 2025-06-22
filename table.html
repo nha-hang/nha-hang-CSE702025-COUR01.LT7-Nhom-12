@@ -310,266 +310,318 @@
         </div>
     </footer>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const startReservationBtn = document.getElementById('start-reservation-btn');
-            const initialReservationSection = document.getElementById('initial-reservation-section');
-            const tableStatusAndMap = document.getElementById('table-status-and-map');
-            const reservationForm = document.getElementById('reservation-form');
-            const confirmTableSelectionBtn = document.getElementById('confirm-table-selection');
-            const reservationMessageDiv = document.getElementById('reservation-message');
-            const tableIdInput = document.getElementById('table_id');
+    document.addEventListener('DOMContentLoaded', () => {
+        const initialReservationSection = document.getElementById('initial-reservation-section');
+        const startReservationBtn = document.getElementById('start-reservation-btn');
+        const tableStatusAndMap = document.getElementById('table-status-and-map');
+        const reservationFormSection = document.getElementById('reservation-form-section'); // Thêm id cho phần chứa form
+        const reservationForm = document.getElementById('reservation-form');
+        const reservationMessageDiv = document.getElementById('reservation-message');
+        const tableMapDiv = document.getElementById('table-map');
+        const availableTablesSpan = document.getElementById('available-tables');
+        const occupiedTablesSpan = document.getElementById('occupied-tables');
+        const reservedTablesSpan = document.getElementById('reserved-tables');
+        const tableIdInput = document.getElementById('table-id');
+        const selectedTableInfo = document.getElementById('selected-table-info');
+        const confirmTableSelectionBtn = document.getElementById('confirm-table-selection-btn');
 
-            // NEW Elements for managing reservations
-            const manageReservationSection = document.getElementById('manage-reservation-section');
-            const searchReservationsBtn = document.getElementById('search-reservations-btn');
-            const searchPhoneInput = document.getElementById('search_phone');
-            const searchEmailInput = document.getElementById('search_email');
-            const customerReservationsList = document.getElementById('customer-reservations-list');
-            const reservationSearchMessage = document.getElementById('reservation-search-message');
+        let selectedTableId = null; // Biến để lưu trữ ID của bàn đang được chọn
 
+        // Ẩn các phần không cần thiết khi trang tải
+        tableStatusAndMap.style.display = 'none';
+        reservationFormSection.style.display = 'none'; // Đảm bảo phần form cũng bị ẩn
 
-            let selectedTableId = null;
+        // Xử lý nút "Bắt đầu đặt bàn ngay!"
+        startReservationBtn.addEventListener('click', () => {
+            initialReservationSection.style.display = 'none'; // Ẩn phần nút ban đầu
+            tableStatusAndMap.style.display = 'block'; // Hiện sơ đồ bàn và trạng thái
+            updateTableMapAndCounts(); // Cập nhật trạng thái bàn khi hiện sơ đồ
+            tableStatusAndMap.scrollIntoView({ behavior: 'smooth', block: 'start' }); // Cuộn tới sơ đồ
+        });
 
-            // Hàm cập nhật trạng thái bàn và số liệu thống kê
-            async function updateTableMapAndCounts() {
-                try {
-                    const response = await fetch('/api/tables');
-                    const tables = await response.json();
+        // Hàm lấy và cập nhật trạng thái bàn
+        async function updateTableMapAndCounts() {
+            try {
+                const response = await fetch('/api/tables');
+                const data = await response.json();
 
+                if (data.success) {
+                    tableMapDiv.innerHTML = ''; // Xóa các bàn cũ
                     let availableCount = 0;
+                    let occupiedCount = 0;
                     let reservedCount = 0;
 
-                    document.querySelectorAll('.table-seat').forEach(tableDiv => {
-                        const tableId = tableDiv.dataset.tableId;
-                        const table = tables.find(t => t.id == tableId); // Use == for comparison as table.id might be number
+                    data.tables.forEach(table => {
+                        const tableDiv = document.createElement('div');
+                        tableDiv.classList.add('table-item', `table-${table.status}`);
+                        tableDiv.dataset.tableId = table.id;
+                        tableDiv.dataset.tableName = table.name;
+                        tableDiv.dataset.tableCapacity = table.capacity;
 
-                        // Xóa tất cả các class trạng thái cũ
-                        tableDiv.classList.remove('table-available', 'table-reserved', 'selected');
+                        tableDiv.innerHTML = `
+                            <h3>${table.name}</h3>
+                            <p>Số chỗ: ${table.capacity}</p>
+                            <p>Trạng thái: ${getStatusText(table.status)}</p>
+                        `;
 
-                        if (table) {
-                            if (table.status === 'available') {
-                                tableDiv.classList.add('table-available');
-                                tableDiv.style.cursor = 'pointer';
-                                availableCount++;
-                            } else {
-                                tableDiv.classList.add('table-reserved');
-                                tableDiv.style.cursor = 'not-allowed';
-                                reservedCount++;
-                            }
+                        // Thêm sự kiện click cho bàn có sẵn
+                        if (table.status === 'available') {
+                            tableDiv.classList.add('clickable-table'); // Thêm class để dễ dàng định kiểu hover
+                            tableDiv.addEventListener('click', () => {
+                                handleTableClick(table.id, table.name, table.capacity);
+                            });
+                        } else {
+                            // Nếu bàn không có sẵn, có thể thêm tooltip hoặc thông báo khác
+                            tableDiv.title = `Bàn này đã ${getStatusText(table.status)}.`;
                         }
 
-                        // Loại bỏ và thêm lại event listener để tránh trùng lặp
-                        const oldTableDiv = tableDiv;
-                        const newTableDiv = oldTableDiv.cloneNode(true); // Clone node để loại bỏ event listener cũ
-                        oldTableDiv.parentNode.replaceChild(newTableDiv, oldTableDiv);
+                        tableMapDiv.appendChild(tableDiv);
 
-                        // Thêm event listener mới vào newTableDiv
-                        newTableDiv.addEventListener('click', () => {
-                            if (newTableDiv.classList.contains('table-reserved')) {
-                                alert('Bàn này đã có người đặt. Vui lòng chọn bàn khác.');
-                                return;
-                            }
-
-                            // Xóa trạng thái selected khỏi tất cả các bàn
-                            document.querySelectorAll('.table-seat').forEach(div => {
-                                div.classList.remove('selected');
-                            });
-
-                            // Thêm trạng thái selected vào bàn đã chọn
-                            newTableDiv.classList.add('selected');
-                            selectedTableId = newTableDiv.dataset.tableId;
-                            tableIdInput.value = `Bàn ${selectedTableId}`; // Hiển thị ID bàn trong input form
-
-                            // Hiển thị nút xác nhận
-                            confirmTableSelectionBtn.style.display = 'block';
-                        });
+                        // Cập nhật số lượng
+                        if (table.status === 'available') {
+                            availableCount++;
+                        } else if (table.status === 'occupied') {
+                            occupiedCount++;
+                        } else if (table.status === 'reserved') {
+                            reservedCount++;
+                        }
                     });
 
-                    document.getElementById('available-tables').textContent = availableCount;
-                    document.getElementById('reserved-tables').textContent = reservedCount;
-                    document.getElementById('total-tables').textContent = tables.length;
-                } catch (error) {
-                    console.error('Lỗi khi lấy trạng thái bàn:', error);
-                    alert('Không thể tải trạng thái bàn. Vui lòng thử lại sau.');
+                    availableTablesSpan.textContent = availableCount;
+                    occupiedTablesSpan.textContent = occupiedCount;
+                    reservedTablesSpan.textContent = reservedCount;
+
+                } else {
+                    tableMapDiv.innerHTML = `<p class="text-danger">${data.message || 'Không thể tải trạng thái bàn.'}</p>`;
                 }
+            } catch (error) {
+                console.error('Lỗi khi tải trạng thái bàn:', error);
+                tableMapDiv.innerHTML = '<p class="text-danger">Lỗi kết nối máy chủ khi tải trạng thái bàn.</p>';
+            }
+        }
+
+        // Hàm trả về văn bản trạng thái tiếng Việt
+        function getStatusText(status) {
+            switch (status) {
+                case 'available': return 'Sẵn sàng';
+                case 'occupied': return 'Đang sử dụng';
+                case 'reserved': return 'Đã đặt trước';
+                default: return 'Không xác định';
+            }
+        }
+
+        // Xử lý khi click vào bàn có sẵn
+        function handleTableClick(tableId, tableName, tableCapacity) {
+            // Xóa highlight bàn cũ
+            document.querySelectorAll('.table-item.highlight').forEach(item => {
+                item.classList.remove('highlight');
+            });
+
+            // Highlight bàn mới được chọn
+            const clickedTable = document.querySelector(`.table-item[data-table-id="${tableId}"]`);
+            if (clickedTable) {
+                clickedTable.classList.add('highlight');
+                selectedTableId = tableId; // Lưu ID bàn đã chọn
+                tableIdInput.value = tableId; // Đặt giá trị vào input hidden
+                selectedTableInfo.textContent = `Bạn đã chọn: ${tableName} (Sức chứa: ${tableCapacity} người)`;
+                confirmTableSelectionBtn.style.display = 'block'; // Hiển thị nút xác nhận
+            }
+        }
+
+        // Xử lý nút xác nhận chọn bàn
+        confirmTableSelectionBtn.addEventListener('click', () => {
+            if (selectedTableId) {
+                tableStatusAndMap.style.display = 'none'; // Ẩn sơ đồ bàn
+                reservationFormSection.style.display = 'block'; // Hiển thị form đặt bàn
+                reservationFormSection.scrollIntoView({ behavior: 'smooth', block: 'start' }); // Cuộn tới form
+                reservationMessageDiv.textContent = ''; // Xóa thông báo cũ
+                reservationMessageDiv.classList.remove('success', 'error');
+            } else {
+                alert('Vui lòng chọn một bàn trước khi xác nhận.');
+            }
+        });
+
+
+        // Xử lý việc gửi form đặt bàn bằng Fetch API
+        reservationForm.addEventListener('submit', async (event) => {
+            event.preventDefault(); // Ngăn chặn hành vi submit mặc định của form
+
+            // Lấy dữ liệu từ form
+            const formData = new FormData(reservationForm);
+            const data = Object.fromEntries(formData.entries());
+
+            // Đảm bảo table_id được gửi đi
+            if (!selectedTableId) {
+                reservationMessageDiv.textContent = 'Vui lòng chọn bàn trước khi đặt.';
+                reservationMessageDiv.classList.add('error');
+                return;
+            }
+            data.table_id = selectedTableId; // Gán bàn đã chọn vào dữ liệu gửi đi
+
+            reservationMessageDiv.textContent = 'Đang gửi đặt bàn...';
+            reservationMessageDiv.className = 'text-center'; // Reset class
+
+            try {
+                const response = await fetch('/api/reservations', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    reservationMessageDiv.textContent = result.message;
+                    reservationMessageDiv.classList.add('success');
+                    reservationForm.reset(); // Xóa các trường trong form
+                    tableIdInput.value = ''; // Xóa bàn đã chọn trong input
+                    selectedTableId = null; // Reset bàn đã chọn
+                    confirmTableSelectionBtn.style.display = 'none'; // Ẩn nút xác nhận
+                    reservationFormSection.style.display = 'none'; // Ẩn form sau khi đặt thành công
+
+                    // Quay lại màn hình khởi tạo hoặc sơ đồ bàn
+                    initialReservationSection.style.display = 'block'; // Hiển thị lại phần khởi tạo
+                    tableStatusAndMap.style.display = 'none'; // Ẩn sơ đồ bàn
+                    initialReservationSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+                    updateTableMapAndCounts(); // Cập nhật lại trạng thái hiển thị của các bàn
+                    // attachTableClickHandlers(); // Không cần gán lại nếu updateTableMapAndCounts đã tạo lại event listeners
+
+                } else {
+                    reservationMessageDiv.textContent = result.message || 'Lỗi kết nối máy chủ. Vui lòng thử lại sau.';
+                    reservationMessageDiv.classList.add('error');
+                    // Nếu đặt bàn thất bại, bàn vẫn sẽ giữ trạng thái available (nếu ban đầu nó là available)
+                    // không cần thay đổi trạng thái bàn ở đây
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                reservationMessageDiv.textContent = 'Lỗi kết nối máy chủ. Vui lòng thử lại sau.';
+                reservationMessageDiv.classList.add('error');
+            }
+        });
+
+        // Chức năng tra cứu đặt bàn
+        const searchReservationForm = document.getElementById('search-reservation-form');
+        const searchPhoneNumberInput = document.getElementById('search-phone-number');
+        const customerReservationsList = document.getElementById('customer-reservations-list');
+        const reservationSearchMessage = document.getElementById('reservation-search-message');
+
+        searchReservationForm.addEventListener('submit', async function(event) {
+            event.preventDefault();
+            fetchCustomerReservations();
+        });
+
+        async function fetchCustomerReservations() {
+            const phoneNumber = searchPhoneNumberInput.value.trim();
+            if (!phoneNumber) {
+                reservationSearchMessage.textContent = 'Vui lòng nhập số điện thoại.';
+                reservationSearchMessage.classList.add('error');
+                customerReservationsList.innerHTML = '';
+                return;
             }
 
-            // --- Logic mới: Điều khiển hiển thị các phần ---
+            reservationSearchMessage.textContent = 'Đang tra cứu...';
+            reservationSearchMessage.className = 'text-center'; // Reset class
 
-            // Ẩn ban đầu nút xác nhận bàn đã chọn
-            confirmTableSelectionBtn.style.display = 'none';
+            try {
+                const response = await fetch(`/api/customer-reservations?phone=${encodeURIComponent(phoneNumber)}`);
+                const result = await response.json();
 
-            // Khi click vào nút "Bắt đầu đặt bàn ngay!"
-            startReservationBtn.addEventListener('click', () => {
-                initialReservationSection.style.display = 'none'; // Ẩn phần khởi tạo
-                manageReservationSection.style.display = 'none'; // Ẩn phần quản lý đặt bàn
-                tableStatusAndMap.style.display = 'block'; // Hiện sơ đồ bàn
-                updateTableMapAndCounts(); // Cập nhật trạng thái bàn ngay lập tức
-                // Cuộn đến sơ đồ bàn
-                tableStatusAndMap.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            });
-
-            // Khi click vào nút "Xác nhận bàn đã chọn"
-            confirmTableSelectionBtn.addEventListener('click', () => {
-                if (selectedTableId) {
-                    reservationForm.style.display = 'block'; // Hiện form đặt bàn
-                    // Cuộn đến form đặt bàn
-                    reservationForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    // Có thể tự động focus vào trường đầu tiên của form
-                    document.getElementById('customer_name').focus();
-                } else {
-                    alert('Vui lòng chọn một bàn trước khi xác nhận!');
-                }
-            });
-
-            // Xử lý gửi form đặt bàn
-            reservationForm.addEventListener('submit', async function(event) {
-                event.preventDefault(); // Ngăn chặn form submit mặc định
-
-                // Xóa thông báo cũ
-                reservationMessageDiv.textContent = '';
-                reservationMessageDiv.classList.remove('success', 'error');
-
-                if (!selectedTableId) {
-                    reservationMessageDiv.textContent = 'Vui lòng chọn một bàn trước khi đặt.';
-                    reservationMessageDiv.classList.add('error');
-                    return;
-                }
-
-                const formData = new FormData(this);
-                const data = Object.fromEntries(formData.entries());
-                data.table_id = selectedTableId; // Đảm bảo gửi đúng ID bàn đã chọn
-                data.customer_email = data.customer_email || ''; // Ensure email is not 'undefined' if empty
-
-                try {
-                    const response = await fetch('/api/reservations', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(data),
-                    });
-
-                    const result = await response.json();
-
-                    if (response.ok && result.success) {
-                        reservationMessageDiv.textContent = result.message;
-                        reservationMessageDiv.classList.add('success');
-                        reservationForm.reset();
-                        tableIdInput.value = ''; // Xóa bàn đã chọn trong input
-                        selectedTableId = null; // Reset bàn đã chọn
-                        confirmTableSelectionBtn.style.display = 'none'; // Ẩn nút xác nhận
-                        reservationForm.style.display = 'none'; // Ẩn form sau khi đặt thành công
-                        
-                        // Quay lại màn hình khởi tạo hoặc sơ đồ bàn
-                        initialReservationSection.style.display = 'block'; // Hiển thị lại phần khởi tạo
-                        tableStatusAndMap.style.display = 'none'; // Ẩn sơ đồ bàn
-                        initialReservationSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                        updateTableMapAndCounts(); // Cập nhật lại trạng thái bàn sau khi đặt thành công
-
-                    } else {
-                        reservationMessageDiv.textContent = result.error || 'Lỗi kết nối máy chủ. Vui lòng thử lại sau.';
-                        reservationMessageDiv.classList.add('error');
-                    }
-                } catch (error) {
-                    console.error('Error:', error);
-                    reservationMessageDiv.textContent = 'Lỗi kết nối máy chủ. Vui lòng thử lại sau.';
-                    reservationMessageDiv.classList.add('error');
-                }
-            });
-
-            // NEW: Logic for searching and canceling reservations
-            searchReservationsBtn.addEventListener('click', fetchCustomerReservations);
-
-            async function fetchCustomerReservations() {
-                const phone = searchPhoneInput.value.trim();
-                const email = searchEmailInput.value.trim();
                 customerReservationsList.innerHTML = ''; // Clear previous results
-                reservationSearchMessage.textContent = '';
-                reservationSearchMessage.classList.remove('success', 'error');
 
-                if (!phone && !email) {
-                    reservationSearchMessage.textContent = 'Vui lòng nhập số điện thoại hoặc email để tìm kiếm.';
-                    reservationSearchMessage.classList.add('error');
-                    return;
-                }
-
-                let queryParams = new URLSearchParams();
-                if (phone) queryParams.append('phone', phone);
-                if (email) queryParams.append('email', email);
-
-                try {
-                    const response = await fetch(`/api/customer-reservations?${queryParams.toString()}`);
-                    const result = await response.json();
-
-                    if (result.success && result.reservations.length > 0) {
+                if (response.ok && result.success) {
+                    if (result.reservations.length > 0) {
+                        reservationSearchMessage.textContent = ''; // Clear message on success
                         result.reservations.forEach(reservation => {
-                            const reservationDiv = document.createElement('div');
-                            reservationDiv.classList.add('card', 'mb-3', 'reservation-card');
-                            reservationDiv.innerHTML = `
-                                <div class="card-body">
-                                    <h5 class="card-title">Đặt bàn #${reservation.id} - ${reservation.table_name}</h5>
-                                    <p class="card-text"><strong>Khách hàng:</strong> ${reservation.customer_name}</p>
-                                    <p class="card-text"><strong>Điện thoại:</strong> ${reservation.customer_phone}</p>
-                                    <p class="card-text"><strong>Ngày:</strong> ${reservation.reservation_date}</p>
-                                    <p class="card-text"><strong>Giờ:</strong> ${reservation.reservation_time.substring(0, 5)}</p>
-                                    <p class="card-text"><strong>Số khách:</strong> ${reservation.number_of_guests}</p>
-                                    <p class="card-text"><strong>Trạng thái:</strong> <span class="badge badge-${reservation.status === 'pending' ? 'warning' : 'success'}">${reservation.status}</span></p>
-                                    ${reservation.notes ? `<p class="card-text"><strong>Ghi chú:</strong> ${reservation.notes}</p>` : ''}
-                                    <button class="btn btn-danger cancel-reservation-btn mt-2" data-reservation-id="${reservation.id}">Hủy đặt bàn</button>
-                                </div>
-                            `;
-                            customerReservationsList.appendChild(reservationDiv);
-                        });
+                            const li = document.createElement('li');
+                            li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');
+                            li.innerHTML = `
+                                <div>
+                                    <strong>Mã đặt:</strong> #${reservation.id}<br>
+                                    <strong>Bàn:</strong> ${reservation.table_name || reservation.table_id}<br>
+                                    <strong>Ngày & Giờ:</strong> ${reservation.reservation_date} lúc ${reservation.reservation_time}<br>
+                                    <strong>Số khách:</strong> <span class="math-inline">\{reservation\.number\_of\_guests\}<br\>
+<strong>Trạng thái:</strong> <span class="badge badge-{getReservationStatusClass(reservation.status)}">${getReservationStatusText(reservation.status)}</span>
+${reservation.notes ? <br><strong>Ghi chú:</strong> ${reservation.notes} : ''}
+</div>
+${reservation.status === 'pending' || reservation.status === 'confirmed' ?
+<button class="btn btn-danger btn-sm cancel-reservation-btn" data-reservation-id="${reservation.id}">Hủy</button> : ''
+}
+`;
+customerReservationsList.appendChild(li);
+});
 
                         // Attach event listeners to new cancel buttons
                         document.querySelectorAll('.cancel-reservation-btn').forEach(button => {
                             button.addEventListener('click', handleCancelReservation);
                         });
 
-                    } else if (result.success && result.reservations.length === 0) {
-                        reservationSearchMessage.textContent = 'Không tìm thấy đặt bàn nào với thông tin đã cung cấp.';
-                        reservationSearchMessage.classList.add('info'); // You might want a different class for info
                     } else {
-                        reservationSearchMessage.textContent = result.error || 'Lỗi khi tìm kiếm đặt bàn.';
-                        reservationSearchMessage.classList.add('error');
+                        reservationSearchMessage.textContent = 'Không tìm thấy đặt bàn nào với số điện thoại này.';
+                        reservationSearchMessage.classList.add('info');
                     }
-                } catch (error) {
-                    console.error('Lỗi tìm kiếm đặt bàn:', error);
-                    reservationSearchMessage.textContent = 'Lỗi kết nối máy chủ khi tìm kiếm đặt bàn.';
+                } else {
+                    reservationSearchMessage.textContent = result.message || 'Lỗi khi tra cứu đặt bàn.';
                     reservationSearchMessage.classList.add('error');
                 }
+            } catch (error) {
+                console.error('Lỗi khi tra cứu đặt bàn:', error);
+                reservationSearchMessage.textContent = 'Lỗi kết nối máy chủ khi tìm kiếm đặt bàn.';
+                reservationSearchMessage.classList.add('error');
+            }
+        }
+
+        function getReservationStatusText(status) {
+            switch(status) {
+                case 'pending': return 'Đang chờ';
+                case 'confirmed': return 'Đã xác nhận';
+                case 'cancelled': return 'Đã hủy';
+                case 'completed': return 'Đã hoàn tất';
+                default: return 'Không xác định';
+            }
+        }
+
+        function getReservationStatusClass(status) {
+            switch(status) {
+                case 'pending': return 'warning';
+                case 'confirmed': return 'success';
+                case 'cancelled': return 'danger';
+                case 'completed': return 'info';
+                default: return 'secondary';
+            }
+        }
+
+        async function handleCancelReservation(event) {
+            const reservationId = event.target.dataset.reservationId;
+            if (!confirm(`Bạn có chắc chắn muốn hủy đặt bàn #${reservationId} này không?`)) {
+                return;
             }
 
-            async function handleCancelReservation(event) {
-                const reservationId = event.target.dataset.reservationId;
-                if (!confirm(`Bạn có chắc chắn muốn hủy đặt bàn #${reservationId} này không?`)) {
-                    return;
-                }
+            try {
+                const response = await fetch(`/api/reservations/${reservationId}`, {
+                    method: 'DELETE',
+                });
+                const result = await response.json();
 
-                try {
-                    const response = await fetch(`/api/reservations/${reservationId}`, {
-                        method: 'DELETE',
-                    });
-                    const result = await response.json();
-
-                    if (response.ok && result.success) {
-                        alert(result.message);
-                        fetchCustomerReservations(); // Reload the list to show updated status
-                        updateTableMapAndCounts(); // Update the table map status
-                    } else {
-                        alert(result.error || 'Có lỗi xảy ra khi hủy đặt bàn.');
-                    }
-                } catch (error) {
-                    console.error('Lỗi hủy đặt bàn:', error);
-                    alert('Lỗi kết nối máy chủ khi hủy đặt bàn.');
+                if (response.ok && result.success) {
+                    alert(result.message);
+                    fetchCustomerReservations(); // Reload the list to show updated status
+                    updateTableMapAndCounts(); // Update the table map status
+                } else {
+                    alert(result.error || 'Có lỗi xảy ra khi hủy đặt bàn.');
                 }
+            } catch (error) {
+                console.error('Lỗi hủy đặt bàn:', error);
+                alert('Lỗi kết nối máy chủ khi hủy đặt bàn.');
             }
+        }
 
-            // Initial setup: Ensure only the first section is visible
-            tableStatusAndMap.style.display = 'none';
-            reservationForm.style.display = 'none';
-        });
-    </script>
+        // Initial setup: Ensure only the first section is visible
+        tableStatusAndMap.style.display = 'none';
+        reservationFormSection.style.display = 'none'; // Đảm bảo form ẩn ban đầu
+    });
+</script>
 </body>
 </html>
