@@ -49,11 +49,8 @@ Template: https://nunforest.com/koad-demo/index.html
 Nguồn lấy Template: https://themeforest.net/item/koad-restaurant-bistro-html-template/28076978
 
 ## Thành viên
-Nhóm 18 - CNTT3 - K17:
+Nhóm 12 - CNTT3 - K17:
 
-  * Đỗ Phương Nam: 23010288
-  * Nguyễn Quốc Thái: 23010225
-  * Lê Đình Đức Anh: 23010219
   * Lê Đức Anh: 23010251
 
 #### 2025. Đại học Phenikaa
