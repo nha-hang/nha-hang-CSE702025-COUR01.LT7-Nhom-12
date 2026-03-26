@@ -10,12 +10,12 @@ Trang web:https://nha-hang.github.io/nha-hang-CSE702025-N04-Nhom-18./
 
 Các mục lớn của trang web:
 
-  1. [Trang chủ](https://nha-hang.github.io/nha-hang-CSE702025-N04-Nhom-18./)
-  2. [Thực đơn](https://nha-hang.github.io/nha-hang-CSE702025-N04-Nhom-18./menu.html)
-  3. [Đặt bàn](https://nha-hang.github.io/nha-hang-CSE702025-N04-Nhom-18./table.html)
-  4. [Blog](https://nha-hang.github.io/nha-hang-CSE702025-N04-Nhom-18./blog.html)
-  5. [Giới thiệu](https://nha-hang.github.io/nha-hang-CSE702025-N04-Nhom-18./about.html)
-  6. [Liên hệ](https://nha-hang.github.io/nha-hang-CSE702025-N04-Nhom-18./contact.html)
+  1. [Trang chủ](https://nha-hang.github.io/nha-hang-CSE702025-COUR01.LT7-Nhom-12/)
+  2. [Thực đơn](https://nha-hang.github.io/nha-hang-CSE702025-COUR01.LT7-Nhom-12/menu.html)
+  3. [Đặt bàn](https://nha-hang.github.io/nha-hang-CSE702025-COUR01.LT7-Nhom-12/table.html)
+  4. [Blog](https://nha-hang.github.io/nha-hang-CSE702025-COUR01.LT7-Nhom-12/blog.html)
+  5. [Giới thiệu](https://nha-hang.github.io/nha-hang-CSE702025-COUR01.LT7-Nhom-12/about.html)
+  6. [Liên hệ](https://nha-hang.github.io/nha-hang-CSE702025-COUR01.LT7-Nhom-12/contact.html)
 
 ## Một số hình ảnh
   * Trang chủ
